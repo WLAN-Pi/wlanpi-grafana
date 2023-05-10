@@ -12,8 +12,7 @@ fi
 # Install Grafana
 if ! dpkg-query -l grafana >/dev/null 2>&1; then
     echo "Installing Grafana package"
-    sudo apt update
-    sudo apt install -y grafana
+    sudo apt update && sudo apt install -y grafana
 fi
 
 # Enable Grafana web UI port
