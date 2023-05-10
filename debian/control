@@ -1,0 +1,14 @@
+Source: wlanpi-grafana
+Section: embedded
+Priority: optional
+Maintainer: Jiri Brejcha <jirka@jiribrejcha.net>
+Uploaders: Jiri Brejcha <jirka@jiribrejcha.net>
+Build-Depends: debhelper (>=9), build-essential
+Standards-Version: 3.9.8
+Homepage: https://github.com/WLAN-Pi/wlanpi-grafana
+
+Package: wlanpi-grafana
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, tcpdump, dnsutils
+Description: Grafana dashboards for WLAN Pi
