@@ -38,7 +38,7 @@ jobs:
       - name: Archive artifacts and upload to GitHub
         uses: actions/upload-artifact@v3
         with:
-          name: wlanpi-common-${{ matrix.distro }}-${{ matrix.arch }}
+          name: wlanpi-grafana-${{ matrix.distro }}-${{ matrix.arch }}
           path: ${{ steps.build-debian-package.outputs.deb-package }}
 
       - name: Upload armhf package to raspbian/${{ matrix.distro }}
