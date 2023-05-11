@@ -10,5 +10,5 @@ Homepage: https://github.com/WLAN-Pi/wlanpi-grafana
 Package: wlanpi-grafana
 Architecture: any
 Multi-Arch: foreign
-Depends: wlanpi-common (>= 1.0.89), grafana
+Depends: wlanpi-common (>= 1.0.89), grafana, jc
 Description: Grafana dashboards for WLAN Pi
