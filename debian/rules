@@ -10,3 +10,9 @@
 
 override_dh_auto_install:
 	dh_auto_install -- prefix=/usr
+
+override_dh_installinit:
+	dh_installinit --name=wlanpi-grafana-scan
+
+override_dh_systemd_start:
+	dh_systemd_start --no-start --name=wlanpi-grafana-scan

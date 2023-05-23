@@ -1,0 +1,1281 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "Name",
+          "mappings": [],
+          "max": -30,
+          "min": -90,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": -80
+              },
+              {
+                "color": "yellow",
+                "value": -70
+              },
+              {
+                "color": "green",
+                "value": -67
+              }
+            ]
+          },
+          "unit": "dBm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.5.1",
+      "targets": [
+        {
+          "channel": "stream/assoc/wlanpi",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "filter": {
+            "fields": [
+              "rssi",
+              "time"
+            ]
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "Current Associated RSSI",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": ".*assoc_bssid=\"(.*)\", assoc_ssid=\"(.*)\", .*",
+            "renamePattern": "$2 [$1]"
+          }
+        }
+      ],
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": -30,
+            "axisSoftMin": -90,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": -80
+              },
+              {
+                "color": "yellow",
+                "value": -70
+              },
+              {
+                "color": "green",
+                "value": -67
+              }
+            ]
+          },
+          "unit": "Mbits"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rssi"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dBm"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 3
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rx_bitrate"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "solid"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-reds"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tx_bitrate"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dot"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-blues"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 18,
+        "x": 6,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "channel": "stream/assoc/wlanpi",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "filter": {
+            "fields": [
+              "time",
+              "rssi",
+              "tx_bitrate",
+              "rx_bitrate"
+            ]
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "Associated RSSI and Bitrate",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "rssi.*",
+            "renamePattern": "RSSI"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "tx_bitrate.*",
+            "renamePattern": "Tx Bitrate"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "rx_bitrate.*",
+            "renamePattern": "Rx Bitrate"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2412
+              },
+              {
+                "color": "text",
+                "value": 2485
+              },
+              {
+                "color": "green",
+                "value": 5160
+              },
+              {
+                "color": "purple",
+                "value": 5826
+              },
+              {
+                "color": "blue",
+                "value": 5955
+              },
+              {
+                "color": "text",
+                "value": 7116
+              }
+            ]
+          },
+          "unit": "MHz"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 0,
+        "y": 9
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "9.5.1",
+      "targets": [
+        {
+          "channel": "stream/assoc/wlanpi",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "filter": {
+            "fields": [
+              "freq",
+              "time"
+            ]
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "displayName": "Channel",
+          "mappings": [
+            {
+              "options": {
+                "2412": {
+                  "index": 1,
+                  "text": "1"
+                },
+                "2417": {
+                  "index": 2,
+                  "text": "2"
+                },
+                "2422": {
+                  "index": 3,
+                  "text": "3"
+                },
+                "2427": {
+                  "index": 4,
+                  "text": "4"
+                },
+                "2432": {
+                  "index": 5,
+                  "text": "5"
+                },
+                "2437": {
+                  "index": 6,
+                  "text": "6"
+                },
+                "2442": {
+                  "index": 7,
+                  "text": "7"
+                },
+                "2447": {
+                  "index": 8,
+                  "text": "8"
+                },
+                "2452": {
+                  "index": 9,
+                  "text": "9"
+                },
+                "2457": {
+                  "index": 10,
+                  "text": "10"
+                },
+                "2462": {
+                  "index": 11,
+                  "text": "11"
+                },
+                "2467": {
+                  "index": 12,
+                  "text": "12"
+                },
+                "2472": {
+                  "index": 13,
+                  "text": "13"
+                },
+                "2484": {
+                  "index": 14,
+                  "text": "14"
+                },
+                "5180": {
+                  "index": 15,
+                  "text": "36"
+                },
+                "5200": {
+                  "index": 16,
+                  "text": "40"
+                },
+                "5220": {
+                  "index": 17,
+                  "text": "44"
+                },
+                "5240": {
+                  "index": 18,
+                  "text": "48"
+                },
+                "5260": {
+                  "index": 19,
+                  "text": "52"
+                },
+                "5280": {
+                  "index": 20,
+                  "text": "56"
+                },
+                "5300": {
+                  "index": 21,
+                  "text": "60"
+                },
+                "5320": {
+                  "index": 22,
+                  "text": "64"
+                },
+                "5500": {
+                  "index": 23,
+                  "text": "100"
+                },
+                "5520": {
+                  "index": 24,
+                  "text": "104"
+                },
+                "5540": {
+                  "index": 25,
+                  "text": "108"
+                },
+                "5560": {
+                  "index": 26,
+                  "text": "112"
+                },
+                "5580": {
+                  "index": 27,
+                  "text": "116"
+                },
+                "5600": {
+                  "index": 28,
+                  "text": "120"
+                },
+                "5620": {
+                  "index": 29,
+                  "text": "124"
+                },
+                "5640": {
+                  "index": 30,
+                  "text": "128"
+                },
+                "5660": {
+                  "index": 31,
+                  "text": "132"
+                },
+                "5680": {
+                  "index": 32,
+                  "text": "136"
+                },
+                "5700": {
+                  "index": 33,
+                  "text": "140"
+                },
+                "5720": {
+                  "index": 34,
+                  "text": "144"
+                },
+                "5745": {
+                  "index": 35,
+                  "text": "149"
+                },
+                "5765": {
+                  "index": 36,
+                  "text": "153"
+                },
+                "5785": {
+                  "index": 37,
+                  "text": "157"
+                },
+                "5805": {
+                  "index": 38,
+                  "text": "161"
+                },
+                "5825": {
+                  "index": 39,
+                  "text": "165"
+                },
+                "5955": {
+                  "index": 40,
+                  "text": "1"
+                },
+                "5975": {
+                  "index": 41,
+                  "text": "5"
+                },
+                "5995": {
+                  "index": 42,
+                  "text": "9"
+                },
+                "6015": {
+                  "index": 43,
+                  "text": "13"
+                },
+                "6035": {
+                  "index": 44,
+                  "text": "17"
+                },
+                "6055": {
+                  "index": 45,
+                  "text": "21"
+                },
+                "6075": {
+                  "index": 46,
+                  "text": "25"
+                },
+                "6095": {
+                  "index": 47,
+                  "text": "29"
+                },
+                "6115": {
+                  "index": 48,
+                  "text": "33"
+                },
+                "6135": {
+                  "index": 49,
+                  "text": "37"
+                },
+                "6155": {
+                  "index": 50,
+                  "text": "41"
+                },
+                "6175": {
+                  "index": 51,
+                  "text": "45"
+                },
+                "6195": {
+                  "index": 52,
+                  "text": "49"
+                },
+                "6215": {
+                  "index": 53,
+                  "text": "53"
+                },
+                "6235": {
+                  "index": 54,
+                  "text": "57"
+                },
+                "6255": {
+                  "index": 55,
+                  "text": "61"
+                },
+                "6275": {
+                  "index": 56,
+                  "text": "65"
+                },
+                "6295": {
+                  "index": 57,
+                  "text": "69"
+                },
+                "6315": {
+                  "index": 58,
+                  "text": "73"
+                },
+                "6335": {
+                  "index": 59,
+                  "text": "77"
+                },
+                "6355": {
+                  "index": 60,
+                  "text": "81"
+                },
+                "6375": {
+                  "index": 61,
+                  "text": "85"
+                },
+                "6395": {
+                  "index": 62,
+                  "text": "89"
+                },
+                "6415": {
+                  "index": 63,
+                  "text": "93"
+                },
+                "6435": {
+                  "index": 64,
+                  "text": "97"
+                },
+                "6455": {
+                  "index": 65,
+                  "text": "101"
+                },
+                "6475": {
+                  "index": 66,
+                  "text": "105"
+                },
+                "6495": {
+                  "index": 67,
+                  "text": "109"
+                },
+                "6515": {
+                  "index": 68,
+                  "text": "113"
+                },
+                "6535": {
+                  "index": 69,
+                  "text": "117"
+                },
+                "6555": {
+                  "index": 70,
+                  "text": "121"
+                },
+                "6575": {
+                  "index": 71,
+                  "text": "125"
+                },
+                "6595": {
+                  "index": 72,
+                  "text": "129"
+                },
+                "6615": {
+                  "index": 73,
+                  "text": "133"
+                },
+                "6635": {
+                  "index": 74,
+                  "text": "137"
+                },
+                "6655": {
+                  "index": 75,
+                  "text": "141"
+                },
+                "6675": {
+                  "index": 76,
+                  "text": "145"
+                },
+                "6695": {
+                  "index": 77,
+                  "text": "149"
+                },
+                "6715": {
+                  "index": 78,
+                  "text": "153"
+                },
+                "6735": {
+                  "index": 79,
+                  "text": "157"
+                },
+                "6755": {
+                  "index": 80,
+                  "text": "161"
+                },
+                "6775": {
+                  "index": 81,
+                  "text": "165"
+                },
+                "6795": {
+                  "index": 82,
+                  "text": "169"
+                },
+                "6815": {
+                  "index": 83,
+                  "text": "173"
+                },
+                "6835": {
+                  "index": 84,
+                  "text": "177"
+                },
+                "6855": {
+                  "index": 85,
+                  "text": "181"
+                },
+                "6875": {
+                  "index": 86,
+                  "text": "185"
+                },
+                "6895": {
+                  "index": 87,
+                  "text": "189"
+                },
+                "6915": {
+                  "index": 88,
+                  "text": "193"
+                },
+                "6935": {
+                  "index": 89,
+                  "text": "197"
+                },
+                "6955": {
+                  "index": 90,
+                  "text": "201"
+                },
+                "6975": {
+                  "index": 91,
+                  "text": "205"
+                },
+                "6995": {
+                  "index": 92,
+                  "text": "209"
+                },
+                "7015": {
+                  "index": 93,
+                  "text": "213"
+                },
+                "7035": {
+                  "index": 94,
+                  "text": "217"
+                },
+                "7055": {
+                  "index": 95,
+                  "text": "221"
+                },
+                "7075": {
+                  "index": 96,
+                  "text": "225"
+                },
+                "7095": {
+                  "index": 97,
+                  "text": "229"
+                },
+                "7115": {
+                  "index": 98,
+                  "text": "233"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2412
+              },
+              {
+                "color": "text",
+                "value": 2485
+              },
+              {
+                "color": "green",
+                "value": 5160
+              },
+              {
+                "color": "purple",
+                "value": 5826
+              },
+              {
+                "color": "blue",
+                "value": 5955
+              },
+              {
+                "color": "text",
+                "value": 7116
+              }
+            ]
+          },
+          "unit": "Channel"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 3,
+        "y": 9
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "9.5.1",
+      "targets": [
+        {
+          "channel": "stream/assoc/wlanpi",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "filter": {
+            "fields": [
+              "freq",
+              "time"
+            ]
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": -30,
+            "axisSoftMin": -90,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": -80
+              },
+              {
+                "color": "yellow",
+                "value": -70
+              },
+              {
+                "color": "green",
+                "value": -67
+              }
+            ]
+          },
+          "unit": "dBm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Last *",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "channel": "stream/scan/wlanpi",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "filter": {
+            "fields": [
+              "time",
+              "rssi",
+              "labels"
+            ]
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "Scan RSSI",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "bssid",
+              "ssid",
+              "name"
+            ],
+            "valueLabel": "name"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "string"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RSSI"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "lcd",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "dBm"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": -80
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": -70
+                    },
+                    {
+                      "color": "green",
+                      "value": -67
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Frequency"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 119
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Channel"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BSSID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 156
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SSID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 394
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "RSSI"
+          }
+        ]
+      },
+      "pluginVersion": "9.5.1",
+      "targets": [
+        {
+          "channel": "stream/scan/wlanpi",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "filter": {
+            "fields": [
+              "labels",
+              "rssi"
+            ]
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "Scan Results",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "labelsToFields": true,
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Field": true,
+              "name": true
+            },
+            "indexByName": {
+              "Field": 0,
+              "Last *": 6,
+              "bssid": 1,
+              "channel": 3,
+              "freq": 4,
+              "name": 5,
+              "ssid": 2
+            },
+            "renameByName": {
+              "Last *": "RSSI",
+              "bssid": "BSSID",
+              "channel": "Channel",
+              "freq": "Frequency",
+              "name": "",
+              "ssid": "SSID"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "Channel"
+              },
+              {
+                "destinationType": "number",
+                "targetField": "Frequency"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "nowDelay": ""
+  },
+  "timezone": "",
+  "title": "WLAN Pi Scan",
+  "uid": "Vpigcr04z",
+  "version": 43,
+  "weekStart": ""
+}
