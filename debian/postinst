@@ -17,3 +17,13 @@ sudo /bin/systemctl enable grafana-server
 # Start Grafana service
 echo "Enabling grafana-server service"
 sudo /bin/systemctl start grafana-server
+
+# Create service account
+curl -s -X POST http://admin:admin@localhost:3000/api/serviceaccounts -H "Accept: application/json" -H "Content-Type: application/json" -d '{"name": "wlanpi", "role": "Admin", "isDisabled": false}'
+
+# Generate service API token
+GRAFANA_TOKEN=$(curl -s -X POST http://admin:admin@localhost:3000/api/serviceaccounts/2/tokens -H "Accept: application/json" -H "Content-Type: application/json" -d '{"name": "wlanpi", "role": "Admin"}' | jq -r '.key')
+
+# Save API token to env variable
+echo "GRAFANA_TOKEN=$GRAFANA_TOKEN" | sudo tee -a /etc/environment
+set -a; source /etc/environment; set +a
