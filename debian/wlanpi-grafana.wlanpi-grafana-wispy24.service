@@ -4,6 +4,7 @@ Description=Streams Wi-Spy 2.4 GHz spectrum data to WLAN Pi Grafana Wi-Spy dashb
 [Service]
 ExecStart=/opt/wlanpi-grafana/wispy/wispy-24ghz.sh
 WorkingDirectory=/opt/wlanpi-grafana/wispy
+EnvironmentFile=/etc/environment
 
 [Install]
 WantedBy=multi-user.target
