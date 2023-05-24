@@ -1,0 +1,9 @@
+[Unit]
+Description=Streams Wi-Spy 2.4 GHz spectrum data to WLAN Pi Grafana Wi-Spy dashboard
+
+[Service]
+ExecStart=/opt/wlanpi-grafana/wispy/wispy-24ghz.sh
+WorkingDirectory=/opt/wlanpi-grafana/wispy
+
+[Install]
+WantedBy=multi-user.target

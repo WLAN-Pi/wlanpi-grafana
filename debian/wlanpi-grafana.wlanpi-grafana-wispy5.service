@@ -1,0 +1,9 @@
+[Unit]
+Description=Streams Wi-Spy 5 GHz spectrum data to WLAN Pi Grafana Wi-Spy dashboard
+
+[Service]
+ExecStart=/opt/wlanpi-grafana/wispy/wispy-5ghz.sh
+WorkingDirectory=/opt/wlanpi-grafana/wispy
+
+[Install]
+WantedBy=multi-user.target
