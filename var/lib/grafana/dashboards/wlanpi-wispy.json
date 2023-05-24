@@ -91,7 +91,7 @@
           "refId": "A"
         }
       ],
-      "title": "WiSpy Live",
+      "title": "Wi-Spy Live",
       "type": "ae3e-plotly-panel"
     },
     {
@@ -157,7 +157,7 @@
           "refId": "A"
         }
       ],
-      "title": "WiSpy Waterfall",
+      "title": "Wi-Spy Waterfall",
       "type": "ae3e-plotly-panel"
     }
   ],
@@ -173,7 +173,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "WiSpy3",
+  "title": "WLAN Pi Wi-Spy",
   "uid": "hFpoOH_7k",
   "version": 5,
   "weekStart": ""
