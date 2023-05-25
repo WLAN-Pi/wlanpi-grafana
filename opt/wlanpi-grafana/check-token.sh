@@ -1,23 +1,5 @@
 #!/bin/bash
 
-#DEBHELPER#
-
-# Install plugins
-echo Installing Grafana plugins
-sudo grafana-cli plugins install ae3e-plotly-panel
-
-# Enable Grafana web UI port
-echo "Enabling Grafana TCP port 3000"
-sudo ufw allow 3000/tcp
-
-# Start Grafana service
-echo "Starting Grafana server service"
-sudo /bin/systemctl start grafana-server
-
-# Enable Grafana service
-echo "Enabling Grafana server service"
-sudo /bin/systemctl enable grafana-server
-
 # Check if token has been created. If not, attempt to create one now.
 set -a; source /etc/environment; set +a
 
