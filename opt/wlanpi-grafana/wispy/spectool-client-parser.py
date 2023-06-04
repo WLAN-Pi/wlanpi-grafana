@@ -6,9 +6,14 @@ import json
 #import plotext as plt
 import time
 import requests
+from dotenv import load_dotenv
 
 
 grafana_ip = "127.0.0.1"
+load_dotenv(dotenv_path="/etc/environment")
+GRAFANA_TOKEN = os.getenv('GRAFANA_TOKEN')
+assert GRAFANA_TOKEN is not None
+assert GRAFANA_TOKEN != ""
 
 
 """
@@ -69,14 +74,14 @@ for line in sys.stdin:
             print(l)
 
             #Send to Grafana
-            rq = requests.post(f"http://{grafana_ip}:3000/api/live/push/wispy", data=l, headers = {"Authorization": f"Bearer {os.getenv('GRAFANA_TOKEN')}"})
+            rq = requests.post(f"http://{grafana_ip}:3000/api/live/push/wispy", data=l, headers = {"Authorization": f"Bearer {GRAFANA_TOKEN}"})
             print(rq)
 
 
             #print(list(zip(x,y)))
             #plt.scatter(data)
             #plt.show()
-            
+        
         else:
             counter = counter +1
             if counter == 4:
