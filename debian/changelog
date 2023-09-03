@@ -1,5 +1,5 @@
-wlanpi-grafana (1.0.0-25) unstable; urgency=medium
+wlanpi-grafana (1.0.0-26) unstable; urgency=medium
 
   * Package Grafana
 
- -- Jiri Brejcha <jirka@jiribrejcha.net>  Wed, 23 May 2023 21:30:47 +0100
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Wed, 03 Sep 2023 22:43:47 +0100
