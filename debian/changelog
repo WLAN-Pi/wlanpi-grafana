@@ -1,3 +1,10 @@
+wlanpi-grafana (1.0.1-2) unstable; urgency=medium
+
+  * Don't create API token and Service Account during install
+  * Create them when first WLAN Pi streaming service (wispy, scan, etc) starts
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Mon, 04 Sep 2023 12:25:07 +0100
+
 wlanpi-grafana (1.0.1-1) unstable; urgency=medium
 
   * Move wispy's spectool-client-parser into venv
@@ -9,4 +16,4 @@ wlanpi-grafana (1.0.0-26) unstable; urgency=medium
 
   * Package Grafana
 
- -- Jiri Brejcha <jirka@jiribrejcha.net>  Wed, 03 Sep 2023 22:43:47 +0100
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Sun, 03 Sep 2023 22:43:47 +0100
