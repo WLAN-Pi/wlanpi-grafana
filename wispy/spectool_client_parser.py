@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 import os
-import sys
 import re
-import json
-#import plotext as plt
+import sys
 import time
+
+#import plotext as plt
 import requests
 from dotenv import load_dotenv
 
-
 grafana_ip = "127.0.0.1"
 load_dotenv(dotenv_path="/etc/environment")
-GRAFANA_TOKEN = os.getenv('GRAFANA_TOKEN')
+GRAFANA_TOKEN = os.getenv("GRAFANA_TOKEN")
 assert GRAFANA_TOKEN is not None
 assert GRAFANA_TOKEN != ""
 
@@ -38,64 +37,69 @@ Wi-Spy DBx USB 2434400552: -76 -91 -96 -98 -98 -99 -100 -64 -100 -101 -102 -101 
 """
 
 
-counter = 0
-freqs = []
-lf = 0
-hf = 0
-numsamples = 0
+def main():
+    counter = 0
+    freqs = []
+    lf = 0
+    hf = 0
+    numsamples = 0
 
-for line in sys.stdin:
-    print("=====")
-    print(line)
-    print("-----")
-    if line is not None:
-        if counter >= 4:
-            data = list(map(int, line.split(':')[1].split(' ')[1:-1]))
-            #print(len(data))
-            #print(data)
-            x = list(range(len(data)))
-            y = data
+    for line in sys.stdin:
+        print("=====")
+        print(line)
+        print("-----")
+        if line is not None:
+            if counter >= 4:
+                data = list(map(int, line.split(":")[1].split(" ")[1:-1]))
+                # print(len(data))
+                # print(data)
+                x = list(range(len(data)))
+                y = data
+
+                # Build JSON
+                # j = {"lf": lf, "hf": hf}
+                # for i in range(numsamples):
+                #  j[str(freqs[i])] = data[i]
+                # print(j)
+
+                # Build Influx Line Protocol
+                l = "wispy2"
+                # l = l + ",lf=" + str(lf) + ",hf=" + str(hf) + " "
+                l = l + " "
+                l = l + str(freqs[0]) + "=" + str(data[0])
+                for i in range(numsamples - 1):
+                    l = l + "," + str(freqs[i + 1]) + "=" + str(data[i + 1])
+                l = l + " " + str(time.time_ns())
+                print(l)
+
+                # Send to Grafana
+                rq = requests.post(
+                    f"https://{grafana_ip}/app/grafana/api/live/push/wispy",
+                    data=l,
+                    headers={"Authorization": f"Bearer {GRAFANA_TOKEN}"},
+                )
+                print(rq)
+
+                # print(list(zip(x,y)))
+                # plt.scatter(data)
+                # plt.show()
+
+            else:
+                counter = counter + 1
+                if counter == 4:
+                    print("4")
+                    m = re.match(r"(\d+)MHz\-(\d+)MHz.*, (\d+) samples", line.strip())
+                    print(m)
+                    if m:
+                        lf = int(m.groups()[0])
+                        hf = int(m.groups()[1])
+                        numsamples = int(m.groups()[2])
+                        print(lf)
+                        print(hf)
+                        print(numsamples)
+                        for i in range(numsamples):
+                            freqs.append(round(i * (hf - lf) / numsamples + lf, 4))
+                        print(freqs)
 
 
-            #Build JSON
-            #j = {"lf": lf, "hf": hf}
-            #for i in range(numsamples):
-            #  j[str(freqs[i])] = data[i]
-            #print(j)
-
-            #Build Influx Line Protocol
-            l = "wispy2"
-            #l = l + ",lf=" + str(lf) + ",hf=" + str(hf) + " "
-            l = l + " "
-            l = l + str(freqs[0]) + "=" + str(data[0])
-            for i in range(numsamples-1):
-                l = l + "," + str(freqs[i+1]) + "=" + str(data[i+1])
-            l = l + " " + str(time.time_ns())
-            print(l)
-
-            #Send to Grafana
-            rq = requests.post(f"http://{grafana_ip}:3000/api/live/push/wispy", data=l, headers = {"Authorization": f"Bearer {GRAFANA_TOKEN}"})
-            print(rq)
-
-
-            #print(list(zip(x,y)))
-            #plt.scatter(data)
-            #plt.show()
-        
-        else:
-            counter = counter +1
-            if counter == 4:
-                print("4")
-                m = re.match(r"(\d+)MHz\-(\d+)MHz.*, (\d+) samples", line.strip())
-                print(m)
-                if m:
-                    lf = int(m.groups()[0])
-                    hf = int(m.groups()[1])
-                    numsamples =  int(m.groups()[2])
-                    print(lf)
-                    print(hf)
-                    print(numsamples)
-                    for i in range(numsamples):
-                        freqs.append(round(i * (hf - lf) / numsamples + lf, 4))
-                    print(freqs)
-
+sys.exit(main())

@@ -1,0 +1,8 @@
+# dh-virtualenv
+*.tar.gz
+*.debhelper
+*.log
+wlanpi-grafana
+*.substvars
+files
+debhelper-build-stamp

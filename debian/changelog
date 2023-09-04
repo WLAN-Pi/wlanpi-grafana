@@ -1,3 +1,10 @@
+wlanpi-grafana (1.0.1) unstable; urgency=medium
+
+  * Move wispy's spectool-client-parser into venv
+  * Move from default URIs to https://<ip>/app/grafana
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Sun, 03 Sep 2023 23:08:09 -0400
+
 wlanpi-grafana (1.0.0-26) unstable; urgency=medium
 
   * Package Grafana
