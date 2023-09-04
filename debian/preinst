@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Executing preinst script"
+
 # Backup current Grafana config file before we install ours
 GRAFANA_CONF=/etc/grafana/grafana.ini    
 if [ -f "$GRAFANA_CONF" ]; then
