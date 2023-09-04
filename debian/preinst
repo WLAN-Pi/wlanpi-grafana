@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#DEBHELPER#
-
 # Backup current Grafana config file before we install ours
 GRAFANA_CONF=/etc/grafana/grafana.ini    
 if [ -f "$GRAFANA_CONF" ]; then
@@ -10,3 +8,5 @@ if [ -f "$GRAFANA_CONF" ]; then
     echo "Existing grafana.ini detected. Backing it up and moving it to $NEW_CONF..."
     mv "$GRAFANA_CONF" "$NEW_CONF"
 fi
+
+#DEBHELPER#
