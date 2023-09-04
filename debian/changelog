@@ -1,4 +1,4 @@
-wlanpi-grafana (1.0.1) unstable; urgency=medium
+wlanpi-grafana (1.0.1-1) unstable; urgency=medium
 
   * Move wispy's spectool-client-parser into venv
   * Move from default URIs to https://<ip>/app/grafana
