@@ -8,7 +8,8 @@ sudo grafana-cli plugins install ae3e-plotly-panel
 
 # Start Grafana service
 echo "Starting Grafana server service"
-sudo /bin/systemctl restart grafana-server
+sudo /bin/systemctl stop grafana-server
+sudo /bin/systemctl start grafana-server
 
 # Enable Grafana service
 echo "Enabling Grafana server service"
