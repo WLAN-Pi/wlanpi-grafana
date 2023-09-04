@@ -1,3 +1,9 @@
+wlanpi-grafana (1.0.1-5) unstable; urgency=medium
+
+  * Add grafana.ini config file
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Mon, 04 Sep 2023 17:20:07 +0100
+
 wlanpi-grafana (1.0.1-4) unstable; urgency=medium
 
   * Handle 'float' object has no attribute 'replace'
