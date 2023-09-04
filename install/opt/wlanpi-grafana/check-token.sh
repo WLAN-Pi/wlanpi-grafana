@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# Check if token has been created. If not, attempt to create one now.
+# Check if Grafana service is running
+if ! systemctl is-active --quiet grafana-server; then
+    echo "Error: Grafana service is not running"
+    exit 1
+fi
+
+# Check if Service Account and API token have been created. If not, create them.
 set -a; source /etc/environment; set +a
 
 if [ ${#GRAFANA_TOKEN} -lt 40 ]; then
