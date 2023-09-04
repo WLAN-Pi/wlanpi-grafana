@@ -1,3 +1,9 @@
+wlanpi-grafana (1.0.1-6) unstable; urgency=medium
+  
+  * Backup current grafana.ini config file and install ours
+ 
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Mon, 04 Sep 2023 22:08:00 +0100
+
 wlanpi-grafana (1.0.1-5) unstable; urgency=medium
 
   * Add grafana.ini config file

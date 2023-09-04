@@ -3,14 +3,14 @@
 #DEBHELPER#
 
 # Install plugins
-echo Installing Grafana plugins
-sudo grafana-cli plugins install ae3e-plotly-panel
+echo "Installing Grafana plugins"
+grafana-cli plugins install ae3e-plotly-panel
 
-# Start Grafana service
-echo "Starting Grafana server service"
-sudo /bin/systemctl stop grafana-server
-sudo /bin/systemctl start grafana-server
+# Restart Grafana service
+echo "Restarting Grafana server service"
+/bin/systemctl stop grafana-server
+/bin/systemctl start grafana-server
 
 # Enable Grafana service
 echo "Enabling Grafana server service"
-sudo /bin/systemctl enable grafana-server
+/bin/systemctl enable grafana-server
