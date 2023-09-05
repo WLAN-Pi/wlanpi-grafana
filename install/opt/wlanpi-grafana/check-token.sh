@@ -32,6 +32,7 @@ if [ ${#GRAFANA_TOKEN} -lt 40 ]; then
         set -a; source /etc/environment; set +a
     else
         echo "Error: Failed to create Grafana API token"
+        exit 1
     fi
 else
     echo "Existing Grafana API token found in environmental variable"
