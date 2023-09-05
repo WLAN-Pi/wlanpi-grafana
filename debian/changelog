@@ -1,4 +1,4 @@
-wlanpi-grafana (1.0.1-9) unstable; urgency=medium
+wlanpi-grafana (1.0.1-10) unstable; urgency=medium
   
   * Backup current grafana.ini config file and install ours
  
