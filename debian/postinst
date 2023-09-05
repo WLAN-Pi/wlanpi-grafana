@@ -14,3 +14,25 @@ echo "Restarting Grafana server service"
 # Enable Grafana service
 echo "Enabling Grafana server service"
 /bin/systemctl enable grafana-server
+
+# function to check if a given path is a symlink
+function isValidSymlink() {
+    if [ -L "$1" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Backup current Grafana config file before we install ours
+GRAFANA_CONF=/etc/grafana/grafana.ini    
+if ! isValidSymlink $GRAFANA_CONF; then
+    if [ -f "$GRAFANA_CONF" ]; then
+        TSTAMP=`date '+%s'`
+        NEW_CONF="$GRAFANA_CONF.$TSTAMP"
+        echo "Existing grafana.conf detected; backing it up and moving it to $NEW_CONF..."
+        mv $GRAFANA_CONF $NEW_CONF
+    fi
+    echo "Linking our grafana.ini config ..."
+    ln -s /etc/wlanpi-grafana/grafana.ini $NGINX_CONF
+fi

@@ -1,4 +1,4 @@
-install/etc/grafana/grafana.ini etc/grafana/
+install/etc/grafana/grafana.ini etc/wlanpi-grafana/
 install/etc/grafana/provisioning/dashboards/wlanpi-dashboards.yaml etc/grafana/provisioning/dashboards/
 install/opt/wlanpi-grafana/* opt/wlanpi-grafana/
 install/var/lib/grafana/dashboards/* var/lib/grafana/dashboards/
