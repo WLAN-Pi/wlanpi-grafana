@@ -1,5 +1,5 @@
 [Unit]
-Description=Streams data to WLAN Pi Grafana Scan dashboard
+Description=Streams data to WLAN Pi Grafana Scanner dashboard
 
 [Service]
 ExecStart=/opt/wlanpi-grafana/scanner/stream-scanner.sh
