@@ -1,4 +1,4 @@
-wlanpi-grafana (1.0.1-12) unstable; urgency=medium
+wlanpi-grafana (1.0.1-13) unstable; urgency=medium
   
   * Rename Scan to Scanner
   * Remove associated client graphs from Scanner dashboard
