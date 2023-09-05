@@ -1,3 +1,10 @@
+wlanpi-grafana (1.0.1-11) unstable; urgency=medium
+  
+  * Rename Scan to Scanner
+  * Remove associated client graphs from Scanner dashboard
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Tue, 05 Sep 2023 19:30:00 +0100
+
 wlanpi-grafana (1.0.1-10) unstable; urgency=medium
   
   * Backup current grafana.ini config file and install ours
