@@ -2,19 +2,6 @@
 
 #DEBHELPER#
 
-# Install plugins
-echo "Installing Grafana plugins"
-grafana-cli plugins install ae3e-plotly-panel
-
-# Restart Grafana service
-echo "Restarting Grafana server service"
-/bin/systemctl stop grafana-server
-/bin/systemctl start grafana-server
-
-# Enable Grafana service
-echo "Enabling Grafana server service"
-/bin/systemctl enable grafana-server
-
 # function to check if a given path is a symlink
 function isValidSymlink() {
     if [ -L "$1" ]; then
@@ -34,5 +21,18 @@ if ! isValidSymlink $GRAFANA_CONF; then
         mv $GRAFANA_CONF $NEW_CONF
     fi
     echo "Linking our grafana.ini config ..."
-    ln -s /etc/wlanpi-grafana/grafana.ini $NGINX_CONF
+    ln -s /etc/wlanpi-grafana/grafana.ini $GRAFANA_CONF
 fi
+
+# Install plugins
+echo "Installing Grafana plugins"
+grafana-cli plugins install ae3e-plotly-panel
+
+# Restart Grafana service
+echo "Restarting Grafana server service"
+/bin/systemctl stop grafana-server
+/bin/systemctl start grafana-server
+
+# Enable Grafana service
+echo "Enabling Grafana server service"
+/bin/systemctl enable grafana-server
