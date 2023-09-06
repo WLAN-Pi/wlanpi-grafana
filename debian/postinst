@@ -36,3 +36,6 @@ echo "Restarting Grafana server service"
 # Enable Grafana service
 echo "Enabling Grafana server service"
 /bin/systemctl enable grafana-server
+
+# Change default admin/admin credentials to admin/wlanpi
+/usr/sbin/grafana-cli admin reset-admin-password wlanpi

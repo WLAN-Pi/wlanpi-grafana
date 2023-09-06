@@ -1,3 +1,9 @@
+wlanpi-grafana (1.0.1-14) unstable; urgency=medium
+
+  * Change default credentials to admin/wlanpi
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Wed, 06 Sep 2023 23:11:00 +0100
+
 wlanpi-grafana (1.0.1-13) unstable; urgency=medium
   
   * Rename Scan to Scanner
