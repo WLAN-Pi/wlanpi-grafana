@@ -37,5 +37,7 @@ echo "Restarting Grafana server service"
 echo "Enabling Grafana server service"
 /bin/systemctl enable grafana-server
 
-# Change default admin/admin credentials to admin/wlanpi
-/usr/sbin/grafana-cli admin reset-admin-password wlanpi
+# Change default admin/admin credentials to admin/wlanpi, but do it only once at package first installation time, not when user upgrades package
+if [ ! -f /opt/wlanpi-grafana/pwd-changed ]; then
+    /usr/sbin/grafana-cli admin reset-admin-password wlanpi && touch /opt/wlanpi-grafana/pwd-changed
+fi
