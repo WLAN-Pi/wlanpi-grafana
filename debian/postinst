@@ -11,6 +11,10 @@ function isValidSymlink() {
     fi
 }
 
+# Stop Grafana service if it is running
+echo "Stopping Grafana service ..."
+/bin/systemctl is-active --quiet grafana-server.service && /bin/systemctl stop grafana-server.service
+
 # Backup current Grafana config file before we install ours
 GRAFANA_CONF=/etc/grafana/grafana.ini    
 if ! isValidSymlink $GRAFANA_CONF; then
@@ -27,15 +31,6 @@ fi
 # Install plugins
 echo "Installing Grafana plugins"
 grafana-cli plugins install ae3e-plotly-panel
-
-# Restart Grafana service
-echo "Restarting Grafana server service"
-/bin/systemctl stop grafana-server
-/bin/systemctl start grafana-server
-
-# Enable Grafana service
-echo "Enabling Grafana server service"
-/bin/systemctl enable grafana-server
 
 # Change default admin/admin credentials to admin/wlanpi, but do it only once at package first installation time, not when user upgrades package
 if [ ! -f /opt/wlanpi-grafana/pwd-changed ]; then
