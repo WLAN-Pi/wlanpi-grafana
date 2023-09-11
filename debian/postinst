@@ -34,5 +34,17 @@ grafana-cli plugins install ae3e-plotly-panel
 
 # Change default admin/admin credentials to admin/wlanpi, but do it only once at package first installation time, not when user upgrades package
 if [ ! -f /opt/wlanpi-grafana/pwd-changed ]; then
+
+    # Start Grafana service and then change password, password change needs to happen only after the service has started at least once
+    echo "Start Grafana service and change default credentials to admin/wlanpi ..."
+    /bin/systemctl start grafana-server.service
+    while ! /bin/systemctl is-active --quiet grafana-server.service; do
+        sleep 1
+        echo "Waiting for grafana-server.service to start ..."
+    done
     /usr/sbin/grafana-cli admin reset-admin-password wlanpi && touch /opt/wlanpi-grafana/pwd-changed
+    
+    # Stop Grafana service
+    echo "Stopping Grafana service ..."
+    /bin/systemctl stop grafana-server.service
 fi

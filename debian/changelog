@@ -1,3 +1,9 @@
+wlanpi-grafana (1.0.1-17) unstable; urgency=medium
+
+  * Start grafana-server.service before changing password
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Mon, 11 Sep 2023 12:58:00 +0100
+
 wlanpi-grafana (1.0.1-16) unstable; urgency=medium
 
   * Do not start and do not enable grafana-server.service after package has been installed
