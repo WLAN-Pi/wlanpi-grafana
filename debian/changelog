@@ -1,4 +1,4 @@
-wlanpi-grafana (1.0.1-19) unstable; urgency=medium
+wlanpi-grafana (1.0.1-20) unstable; urgency=medium
 
   * Start grafana-server.service before changing password
 
