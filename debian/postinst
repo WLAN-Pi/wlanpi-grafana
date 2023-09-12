@@ -48,7 +48,7 @@ if [ ! -f /opt/wlanpi-grafana/pwd-changed ]; then
     sleep 30
 
     echo "Changing default credentials to admin/wlanpi ..."
-    /usr/sbin/grafana-cli admin reset-admin-password wlanpi && touch /opt/wlanpi-grafana/pwd-changed
+    /usr/sbin/grafana-cli admin reset-admin-password wlanpi --skip-migrations && touch /opt/wlanpi-grafana/pwd-changed
 
     # Stop Grafana service
     echo "Stopping Grafana service ..."
