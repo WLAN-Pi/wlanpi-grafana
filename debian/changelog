@@ -1,3 +1,9 @@
+wlanpi-grafana (1.0.1-21) unstable; urgency=medium
+
+  * Refactor password change
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Wed, 13 Sep 2023 14:58:00 +0100
+
 wlanpi-grafana (1.0.1-20) unstable; urgency=medium
 
   * Start grafana-server.service before changing password
