@@ -11,7 +11,8 @@ Build-Depends: debhelper (>= 11),
                python3-setuptools,
                python3-distutils,
                python3-venv,
-               build-essential
+               build-essential,
+               libusb-1.0-0
 Standards-Version: 4.6.0
 X-Python3-Version: >= 3.9
 Homepage: https://github.com/WLAN-Pi/wlanpi-grafana
