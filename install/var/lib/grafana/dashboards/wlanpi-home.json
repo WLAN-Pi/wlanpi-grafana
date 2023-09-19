@@ -68,7 +68,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community has created these Dashboards for you\n\n- Monitor WLAN Pi Health\n- [Wi-Fi Scanner](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1&from=1695116294697&to=1695116594697)\n- Spectrum analysis using WiPry Clarity\n- [Spectrum analysis using Metageek Wi-Spy](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)",
+        "content": "# WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you\n\n- Monitor WLAN Pi Health\n- [Wi-Fi Scanner](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1&from=1695116294697&to=1695116594697)\n- Spectrum analysis using WiPry Clarity\n- [Spectrum analysis using Metageek Wi-Spy](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)",
         "mode": "markdown"
       },
       "pluginVersion": "10.1.1",
