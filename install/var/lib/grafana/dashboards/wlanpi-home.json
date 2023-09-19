@@ -68,7 +68,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# 📈 WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you.\n\nSimply head over to the Grafana menu and start Data Stream using the play icon. Then head over to the Dashboard.\n\nOut of the box, you can:\n- Monitor health of your WLAN Pi\n- [Scan for Wi-Fi networks](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1&from=1695116294697&to=1695116594697)\n- Perform spectrum analysis using WiPry Clarity**\n- [Perform spectrum analysis using Metageek Wi-Spy**](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)\n\n\\** Requires additional hardware\n\nIf you captured any feedback, [use our forum](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback).",
+        "content": "# 📈 WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you.\n\nSimply head over to the Grafana menu and start Data Stream using the play icon. Then head over to the Dashboard.\n\nOut of the box, you can:\n- Monitor health of your WLAN Pi\n- [Scan for Wi-Fi networks](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1&from=1695116294697&to=1695116594697)\n- Perform spectrum analysis using WiPry Clarity**\n- [Perform spectrum analysis using Metageek Wi-Spy**](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)\n\n\\** Requires additional hardware\n\nIf you captured any feedback, [use our discussion board](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback).",
         "mode": "markdown"
       },
       "pluginVersion": "10.1.2",
@@ -104,7 +104,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# ⭐️ Become A Top Contributor\n\nOnce you have explored our Dashboards, experiment and create yours. We would love to see what you have built. Tweet it out loud and mention [#WLANPi](https://twitter.com/search?q=%23WLANPi&src=typed_query&f=live).\n\nShare your Dashboard with others. Simply [create a new post in our forum](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback), and we will be in touch. We will ship top Dashboards in the next release and give you the credit you deserve. \n\n",
+        "content": "# ⭐️ Become A Top Contributor\n\nOnce you have explored our Dashboards, experiment and create yours. We would love to see what you have built. Tweet it out loud and mention [#WLANPi](https://twitter.com/search?q=%23WLANPi&src=typed_query&f=live).\n\nShare your Dashboard with others. Simply [create a new post on our discussion board](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback), and we will be in touch. We will ship top Dashboards in the next release and give you the credit you deserve. \n\n",
         "mode": "markdown"
       },
       "pluginVersion": "10.1.2",
