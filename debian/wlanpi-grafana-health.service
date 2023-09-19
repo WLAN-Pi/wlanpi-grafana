@@ -1,0 +1,10 @@
+[Unit]
+Description=Streams data to WLAN Pi Grafana Health dashboard
+
+[Service]
+ExecStart=/opt/wlanpi-grafana/health/stream-pihealth.sh
+WorkingDirectory=/opt/wlanpi-grafana/health
+EnvironmentFile=/etc/environment
+
+[Install]
+WantedBy=multi-user.target
