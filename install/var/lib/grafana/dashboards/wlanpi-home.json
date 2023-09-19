@@ -12,7 +12,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.1.1"
+      "version": "10.1.2"
     },
     {
       "type": "panel",
@@ -56,7 +56,7 @@
         "uid": "grafana"
       },
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 12,
         "x": 0,
         "y": 0
@@ -68,10 +68,10 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you\n\n- Monitor WLAN Pi Health\n- [Wi-Fi Scanner](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1&from=1695116294697&to=1695116594697)\n- Spectrum analysis using WiPry Clarity\n- [Spectrum analysis using Metageek Wi-Spy](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)",
+        "content": "# WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you.\n\nSimply head over to the Grafana menu and start Data Stream using the play icon. Then head over to the Dashboard.\n\nOut of the box, you can:\n- Monitor health of your WLAN Pi\n- [Scan for Wi-Fi networks](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1&from=1695116294697&to=1695116594697)\n- Perform spectrum analysis using WiPry Clarity**\n- [Perform spectrum analysis using Metageek Wi-Spy**](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)\n\n\\** Requires additional hardware\n\nIf you captured any feedback, [use our forum](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback).",
         "mode": "markdown"
       },
-      "pluginVersion": "10.1.1",
+      "pluginVersion": "10.1.2",
       "targets": [
         {
           "datasource": {
@@ -83,7 +83,7 @@
           "refId": "B"
         }
       ],
-      "title": "Welcome Grafana",
+      "title": "Explore",
       "type": "text"
     },
     {
@@ -92,10 +92,75 @@
         "uid": "grafana"
       },
       "gridPos": {
-        "h": 15,
-        "w": 12,
+        "h": 11,
+        "w": 11,
         "x": 12,
         "y": 0
+      },
+      "id": 123125,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# ⭐️ Become A Top Contributor\n\nOnce you have explored our Dashboards, experiment and create yours. We would love to see what you have built. Tweet it out loud and mention [#WLANPi](https://twitter.com/search?q=%23WLANPi&src=typed_query&f=live).\n\nShare your Dashboard with others. Simply [create a new post in our forum](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback), and we will be in touch. We will ship top Dashboards in the next release and give you the credit you deserve. \n\n",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.2",
+      "title": "Contribute",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "description": "",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 3,
+      "links": [],
+      "options": {
+        "folderId": 0,
+        "includeVars": false,
+        "keepTime": false,
+        "maxItems": 30,
+        "query": "",
+        "showHeadings": true,
+        "showRecentlyViewed": true,
+        "showSearch": false,
+        "showStarred": true,
+        "tags": []
+      },
+      "pluginVersion": "10.1.2",
+      "tags": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Dashboards",
+      "type": "dashlist"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 18,
+        "w": 12,
+        "x": 12,
+        "y": 11
       },
       "id": 4,
       "links": [],
@@ -114,46 +179,6 @@
       ],
       "title": "Latest from the blog",
       "type": "news"
-    },
-    {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "description": "",
-      "gridPos": {
-        "h": 15,
-        "w": 12,
-        "x": 0,
-        "y": 8
-      },
-      "id": 3,
-      "links": [],
-      "options": {
-        "folderId": 0,
-        "includeVars": false,
-        "keepTime": false,
-        "maxItems": 30,
-        "query": "",
-        "showHeadings": true,
-        "showRecentlyViewed": true,
-        "showSearch": false,
-        "showStarred": true,
-        "tags": []
-      },
-      "pluginVersion": "10.1.1",
-      "tags": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "Dashboards",
-      "type": "dashlist"
     }
   ],
   "refresh": "",
@@ -196,7 +221,7 @@
   },
   "timezone": "browser",
   "title": "WLAN Pi Home",
-  "uid": "f349c8b4-35af-4d66-8dd8-5cc262b28ae4",
-  "version": 4,
+  "uid": "ceee7a9e-a9d8-4a9c-aaea-cc90f28698ba",
+  "version": 2,
   "weekStart": ""
 }
