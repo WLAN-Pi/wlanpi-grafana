@@ -20,5 +20,5 @@ Package: wlanpi-grafana
 Architecture: any
 Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.16.1), python3 (>=3.7), python3-distutils, ${misc:Pre-Depends}
-Depends: wlanpi-common (>= 1.0.89), grafana, jc, ${misc:Depends}
+Depends: wlanpi-common (>= 1.0.89), grafana, jc, sysstat, ${misc:Depends}
 Description: Grafana dashboards for WLAN Pi
