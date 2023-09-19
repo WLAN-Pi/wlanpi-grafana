@@ -68,7 +68,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# 📈 WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you.\n\nSimply head over to the Grafana menu and start Data Stream using the play icon. Then head over to the Dashboard.\n\nOut of the box, you can:\n- Monitor health of your WLAN Pi\n- [Scan for Wi-Fi networks](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1&from=1695116294697&to=1695116594697)\n- Perform spectrum analysis using WiPry Clarity**\n- [Perform spectrum analysis using Metageek Wi-Spy**](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)\n\n\\** Requires additional hardware\n\nIf you captured any feedback, [use our discussion board](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback).",
+        "content": "# 📈 WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you.\n\nSimply head over to the Grafana menu and start Data Stream using the play icon. Then head over to the Dashboard.\n\nOut of the box, you can:\n- [Monitor health of your WLAN Pi](/app/grafana/d/f4ebf2ca-94c6-462a-9ed2-276f92fe32e4/wlan-pi-health?orgId=1)\n- [Scan for Wi-Fi networks](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1)\n- Perform spectrum analysis using WiPry Clarity**\n- [Perform spectrum analysis using Metageek Wi-Spy**](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)\n\n\\** Requires additional hardware\n\nIf you captured any feedback, [use our discussion board](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback).",
         "mode": "markdown"
       },
       "pluginVersion": "10.1.2",
