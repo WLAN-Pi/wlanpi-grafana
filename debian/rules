@@ -31,14 +31,14 @@ override_dh_installinit:
 	dh_installinit --name=wlanpi-grafana-wispy24
 	dh_installinit --name=wlanpi-grafana-wispy5
 	dh_installinit --name=wlanpi-grafana-health
-        dh_installinit --name=wlanpi-grafana-internet
+	dh_installinit --name=wlanpi-grafana-internet
 
 override_dh_systemd_start:
 	dh_systemd_start --no-start --name=wlanpi-grafana-scanner
 	dh_systemd_start --no-start --name=wlanpi-grafana-wispy24
 	dh_systemd_start --no-start --name=wlanpi-grafana-wispy5
 	dh_systemd_start --no-start --name=wlanpi-grafana-health
-        dh_systemd_start --no-start --name=wlanpi-grafana-internet
+	dh_systemd_start --no-start --name=wlanpi-grafana-internet
 
 # we don't really want dwz to do anything to our files.
 override_dh_dwz:
