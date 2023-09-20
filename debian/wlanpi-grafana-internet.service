@@ -1,0 +1,10 @@
+[Unit]
+Description=Streams data to WLAN Pi Grafana Internet dashboard
+
+[Service]
+ExecStart=/opt/wlanpi-grafana/internet/stream-internet.sh
+WorkingDirectory=/opt/wlanpi-grafana/internet
+EnvironmentFile=/etc/environment
+
+[Install]
+WantedBy=multi-user.target

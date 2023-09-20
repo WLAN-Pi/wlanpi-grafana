@@ -1,3 +1,9 @@
+wlanpi-grafana (1.0.4) unstable; urgency=medium
+
+  * Add WLAN Pi Internet (System Status) Dashboard
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Tue, 20 Sep 2023 21:06:00 +0100
+
 wlanpi-grafana (1.0.3-3) unstable; urgency=medium
   
   * Add WLAN Pi Health (System Status) Dashboard
