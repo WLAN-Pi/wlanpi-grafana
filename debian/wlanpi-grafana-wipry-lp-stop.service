@@ -1,0 +1,9 @@
+[Unit]
+Description=Stop WiPry Clarity Spectrum Analysis to Grafana
+Documentation=https://github.com/bryanward-net/wipry-lp
+
+[Service]
+Conflicts=wlanpi-grafana-wipry-lp-24 wlanpi-grafana-wipry-lp-5 wlanpi-grafana-wipry-lp-6
+Type=oneshot
+ExecStart=true
+

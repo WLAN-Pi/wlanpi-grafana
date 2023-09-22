@@ -1,0 +1,15 @@
+[Unit]
+Description=WiPry Clarity 6GHz Band Spectrum Analysis to Grafana
+Documentation=https://github.com/bryanward-net/wipry-lp
+
+[Service]
+#ExecStartPre=systemctl stop wipry-lp-5
+#ExecStartPre=systemctl stop wipry-lp-6
+Conflicts=wlanpi-grafana-wipry-lp-24 wlanpi-grafana-wipry-lp-5
+ExecStart=/opt/wlanpi-grafana/wipry/stream-wipry.sh -6
+WorkingDirectory=/opt/wlanpi-grafana/wipry
+EnvironmentFile=/etc/environment
+
+[Install]
+WantedBy=multi-user.target
+
