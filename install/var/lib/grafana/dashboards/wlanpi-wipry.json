@@ -1,0 +1,235 @@
+{
+  "__inputs": [],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "ae3e-plotly-panel",
+      "name": "Plotly panel",
+      "version": "0.5.0"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.0.3"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "code": {
+          "language": "html",
+          "showLineNumbers": true,
+          "showMiniMap": false
+        },
+        "content": "<a>Start WiPry 2.4 GHz</a> |\n<a>Start WiPry 5 GHz</a> |\n<a>Start WiPry 6 GHz</a> |\n<a>⏹ Stop WiPry</a>\n",
+        "mode": "html"
+      },
+      "pluginVersion": "10.0.3",
+      "title": "WiPry Control",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 4,
+      "options": {
+        "config": "",
+        "data": "",
+        "layout": {
+          "legend": {
+            "title": {
+              "text": "Amplitude"
+            }
+          },
+          "paper_bgcolor": "#000",
+          "plot_bgcolor": "#000",
+          "title": {
+            "text": "WiPry Amplitude"
+          },
+          "xaxis": {
+            "autorange": true,
+            "range": [
+              5144.3,
+              5859.295000000002
+            ],
+            "title": {
+              "text": "Freq"
+            },
+            "type": "linear"
+          },
+          "yaxis": {
+            "autorange": false,
+            "range": [
+              -100,
+              -33
+            ],
+            "title": {
+              "text": "Amp"
+            },
+            "type": "linear"
+          }
+        },
+        "onclick": "console.log(data)\n//window.updateVariables({query:{'var-project':'test'}, partial: true})",
+        "script": "//console.log(data);\nvar t = data.series[0].fields.shift();\n//console.log(t);\nvar xs = [];\nvar ys = [];\nvar zs = [];\n\nfor (var x in data.series[0].fields) {\n  //console.log(data.series[0].fields[x].name);\n  xs.push(data.series[0].fields[x].name);\n}\n//console.log(xs);\nfor (var y in data.series[0].fields) {\n  //console.log(data.series[0].fields[y].name);\n  ys.push(data.series[0].fields[y].values.lastItem);\n}\n\nvar total = 0;\nfor (var j = 0; j < data.series[0].fields.length; j++) {\n  total = 0;\n  for(var i = 0; i < data.series[0].fields[j].values.length; i++) {\n    total += data.series[0].fields[j].values[i];\n  }\n  //console.log(total);\n  var avg = total / data.series[0].fields[j].values.length;\n  //console.log(avg);\n  zs.push(avg);\n}\n//console.log(ys);\nvar trace = {\n  \"type\": \"heatmap\",\n  \"x\": xs,\n  \"y\": ys,\n  \"z\": zs,\n  \"colorscale\": \"Jet\",\n  \"zmin\": -100,\n  \"zmax\": -30,\n  \"connectgaps\": false,\n  \"hoverongaps\": true,\n  \"transpose\": false\n};\n//console.log(trace);\nreturn {data:[trace]};"
+      },
+      "targets": [
+        {
+          "channel": "stream/wipry/wipry",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "WiPry Live",
+      "type": "ae3e-plotly-panel"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 18,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 5,
+      "maxDataPoints": 999999,
+      "options": {
+        "config": "",
+        "data": "",
+        "layout": {
+          "legend": {
+            "title": {
+              "text": "Amplitude"
+            }
+          },
+          "paper_bgcolor": "#000",
+          "plot_bgcolor": "#000",
+          "title": {
+            "text": "WiPry Waterfall"
+          },
+          "xaxis": {
+            "autorange": true,
+            "range": [
+              "2023-09-22 17:16:43.532",
+              "2023-09-22 17:17:14.532"
+            ],
+            "title": {
+              "text": "Time"
+            },
+            "type": "date"
+          },
+          "yaxis": {
+            "autorange": true,
+            "range": [
+              5859.295000000002,
+              5144.3
+            ],
+            "title": {
+              "text": "Freq"
+            },
+            "type": "linear"
+          }
+        },
+        "onclick": "console.log(data)\n//window.updateVariables({query:{'var-project':'test'}, partial: true})",
+        "script": "//console.log(data);\nvar t = data.series[0].fields.shift();\n//console.log(t);\nvar xs = [];\nvar ys = [];\nvar zs = [];\nfor (var x in data.series[0].fields) {\n  //console.log(data.series[0].fields[x].name);\n  xs.push(data.series[0].fields[x].name);\n}\n\nfor (var y in t.values) {\n  //console.log(t.values[y]);\n  ys.push(t.values[y]);\n}\n//console.log(xs);\nfor (var z in data.series[0].fields) {\n  //console.log(data.series[0].fields[y]);\n  zs.push(data.series[0].fields[z].values);\n}\n//console.log(ys);\nvar trace = {\n  \"type\": \"heatmap\",\n  \"x\": ys,\n  \"y\": xs,\n  \"z\": zs,\n  \"colorscale\": \"Jet\",\n  \"zmin\": -100,\n  \"zmax\": -30,\n};\n//console.log(trace);\nreturn {data:[trace]};"
+      },
+      "targets": [
+        {
+          "channel": "stream/wipry/wipry",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "WiPry Waterfall",
+      "type": "ae3e-plotly-panel"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-30s",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "WiPry",
+  "uid": "cc3dc3a2-6982-4e88-82fa-e3abc10454c3",
+  "version": 13,
+  "weekStart": ""
+}
