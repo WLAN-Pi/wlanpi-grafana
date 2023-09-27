@@ -1,5 +1,16 @@
 #!/bin/bash
 
+isItNumber(){
+check=`echo "$1" | grep -E ^\-?[0-9]*\.?[0-9]+$`
+if [ "$check" != '' ]; then
+    # It is an int or float
+    echo "$1"
+else
+    # Not a number, return -1 instead
+    echo "-1"
+fi
+}
+
 cpu_temp=$(( $(</sys/class/thermal/thermal_zone0/temp) / 1000 ))
 gpu_temp=$(vcgencmd measure_temp | cut -d"=" -f2 | cut -d"'" -f1)
 pmic_temp=$(vcgencmd measure_temp pmic | cut -d"'" -f1 | cut -d"=" -f2)
