@@ -11,6 +11,16 @@ else
 fi
 }
 
+isItEmptyVar(){
+    if [ -z "$1" ]; then
+     # Empty string, return -1 instead
+      echo "-1"
+    else
+    # Non-empty string
+      echo "$1"
+    fi
+}
+
 cpu_temp=$(( $(</sys/class/thermal/thermal_zone0/temp) / 1000 ))
 gpu_temp=$(vcgencmd measure_temp | cut -d"=" -f2 | cut -d"'" -f1)
 pmic_temp=$(vcgencmd measure_temp pmic | cut -d"'" -f1 | cut -d"=" -f2)
