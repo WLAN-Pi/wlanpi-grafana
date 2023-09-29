@@ -16,12 +16,6 @@
     },
     {
       "type": "panel",
-      "id": "news",
-      "name": "News",
-      "version": ""
-    },
-    {
-      "type": "panel",
       "id": "text",
       "name": "Text",
       "version": ""
@@ -55,10 +49,49 @@
         "type": "datasource",
         "uid": "grafana"
       },
+      "description": "",
+      "gridPos": {
+        "h": 22,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "links": [],
+      "options": {
+        "includeVars": false,
+        "keepTime": false,
+        "maxItems": 100,
+        "query": "",
+        "showHeadings": false,
+        "showRecentlyViewed": false,
+        "showSearch": true,
+        "showStarred": false,
+        "tags": []
+      },
+      "pluginVersion": "10.1.2",
+      "tags": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Dashboards",
+      "type": "dashlist"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
       "gridPos": {
         "h": 11,
         "w": 12,
-        "x": 0,
+        "x": 12,
         "y": 0
       },
       "id": 123124,
@@ -93,9 +126,9 @@
       },
       "gridPos": {
         "h": 11,
-        "w": 11,
+        "w": 12,
         "x": 12,
-        "y": 0
+        "y": 11
       },
       "id": 123125,
       "options": {
@@ -110,75 +143,6 @@
       "pluginVersion": "10.1.2",
       "title": "Contribute",
       "type": "text"
-    },
-    {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "description": "",
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 11
-      },
-      "id": 3,
-      "links": [],
-      "options": {
-        "folderId": 0,
-        "includeVars": false,
-        "keepTime": false,
-        "maxItems": 30,
-        "query": "",
-        "showHeadings": true,
-        "showRecentlyViewed": true,
-        "showSearch": false,
-        "showStarred": true,
-        "tags": []
-      },
-      "pluginVersion": "10.1.2",
-      "tags": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "Dashboards",
-      "type": "dashlist"
-    },
-    {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "gridPos": {
-        "h": 18,
-        "w": 12,
-        "x": 12,
-        "y": 11
-      },
-      "id": 4,
-      "links": [],
-      "options": {
-        "feedUrl": "https://grafana.com/blog/news.xml",
-        "showImage": true
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "Latest from the blog",
-      "type": "news"
     }
   ],
   "refresh": "",
@@ -220,8 +184,8 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "WLAN Pi Home",
-  "uid": "ceee7a9e-a9d8-4a9c-aaea-cc90f28698ba",
-  "version": 3,
+  "title": "WLAN Pi Home Copy",
+  "uid": "cfad4e68-a72f-41ac-837d-efbd5c0c31ac",
+  "version": 1,
   "weekStart": ""
 }
