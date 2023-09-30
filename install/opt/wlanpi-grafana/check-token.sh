@@ -33,7 +33,7 @@ if [ ${#GRAFANA_TOKEN} -lt 40 ]; then
         # Save API token to env variable
         echo "Successfully generated Grafana API token"
         echo "Saving Grafana API token to environmental variable"
-        echo "GRAFANA_TOKEN=$NEW_GRAFANA_TOKEN" | sudo tee -a /etc/environment
+        sudo echo "GRAFANA_TOKEN=$NEW_GRAFANA_TOKEN" >> /etc/environment
         set -a; source /etc/environment; set +a
     else
         echo "Error: Failed to create Grafana API token"
@@ -41,5 +41,5 @@ if [ ${#GRAFANA_TOKEN} -lt 40 ]; then
     fi
 else
     echo "Existing Grafana API token found in environmental variable"
-    echo "GRAFANA_TOKEN=$GRAFANA_TOKEN"
+    #echo "GRAFANA_TOKEN=$GRAFANA_TOKEN"
 fi
