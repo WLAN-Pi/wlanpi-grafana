@@ -1,3 +1,11 @@
+wlanpi-grafana (1.0.5) unstable; urgency=medium
+
+  * Rename tografana.sh to to-grafana.sh
+  * Do not autostart Data Stream services
+  * Rename Wi-Spy services 
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Sun, 01 Oct 2023 23:56:00 +0100
+
 wlanpi-grafana (1.0.4-1) unstable; urgency=medium
 
   * Add WLAN Pi Internet (System Status) Dashboard
