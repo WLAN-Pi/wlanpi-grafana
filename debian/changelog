@@ -1,3 +1,9 @@
+wlanpi-grafana (1.0.6) unstable; urgency=medium
+
+  * Internet dashboard uses JSON output of speedtest-cli, adds RTT to gateway and Google
+
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Mon, 02 Oct 2023 10:56:00 +0100
+
 wlanpi-grafana (1.0.5-2) unstable; urgency=medium
 
   * Rename tografana.sh to to-grafana.sh

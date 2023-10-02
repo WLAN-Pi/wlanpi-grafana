@@ -6,7 +6,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.1.2"
+      "version": "10.1.4"
     },
     {
       "type": "panel",
@@ -225,7 +225,9 @@
           "filter": {
             "fields": [
               "time",
-              "rtt"
+              "rtt_google",
+              "rtt_gateway",
+              "rtt_speedtest"
             ]
           },
           "queryType": "measurements",
