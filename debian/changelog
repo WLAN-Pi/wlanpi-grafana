@@ -1,4 +1,4 @@
-wlanpi-grafana (1.0.5-1) unstable; urgency=medium
+wlanpi-grafana (1.0.5-2) unstable; urgency=medium
 
   * Rename tografana.sh to to-grafana.sh
   * Do not autostart Data Stream services
