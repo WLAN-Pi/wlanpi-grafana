@@ -108,7 +108,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# 📈 WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you.\n\nSimply head over to the Grafana menu and start Data Stream using the play icon. Then head over to the Dashboard.\n\nOut of the box, you can:\n- [Monitor health of your WLAN Pi](/app/grafana/d/f4ebf2ca-94c6-462a-9ed2-276f92fe32e4/wlan-pi-health?orgId=1)\n- [Scan for Wi-Fi networks](/app/grafana/d/Vpigcr04z/wlan-pi-scanner?orgId=1)\n- [Perform spectrum analysis using Oscium WiPry Clarity**](/app/grafana/d/cc3dc3a2-6982-4e88-82fa-e3abc10454c3/wlan-pi-wipry)\n- [Perform spectrum analysis using MetaGeek Wi-Spy**](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy?orgId=1)\n\n\\** Requires additional hardware\n\nIf you captured any feedback, [use our discussion board](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback).",
+        "content": "# 📈 WLAN Pi Dashboards\n\nThe WLAN Pi team and the Wi-Fi community have created these Dashboards for you.\n\nSimply head over to the Grafana menu and start Data Stream using the play icon. Then head over to the Dashboard.\n\nOut of the box, you can:\n- [Monitor health of your WLAN Pi](/app/grafana/d/f4ebf2ca-94c6-462a-9ed2-276f92fe32e4/wlan-pi-health)\n- [Monitor your internet connection](/app/grafana/d/c6ae5ee1-1067-42dd-8428-8d36ee4c59e5/wlan-pi-internet)\n- [Scan for Wi-Fi networks](/app/grafana/d/Vpigcr04z/wlan-pi-scanner)\n- [Perform spectrum analysis using Oscium WiPry Clarity**](/app/grafana/d/cc3dc3a2-6982-4e88-82fa-e3abc10454c3/wlan-pi-wipry)\n- [Perform spectrum analysis using MetaGeek Wi-Spy**](/app/grafana/d/hFpoOH_7k/wlan-pi-wi-spy)\n\n\\** Requires additional hardware\n\nIf you captured any feedback, [use our discussion board](https://github.com/WLAN-Pi/feedback/discussions/categories/general-feedback).",
         "mode": "markdown"
       },
       "pluginVersion": "10.1.4",
@@ -221,7 +221,7 @@
   },
   "timezone": "browser",
   "title": "WLAN Pi Home",
-  "uid": "ceee7a9e-a9d8-4a9c-aaea-cc90f28698ba",
-  "version": 3,
+  "uid": "d0e927da-7db6-4d39-b60c-f791b823b3a5",
+  "version": 1,
   "weekStart": ""
 }
