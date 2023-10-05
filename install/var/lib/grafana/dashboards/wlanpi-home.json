@@ -16,12 +16,6 @@
     },
     {
       "type": "panel",
-      "id": "news",
-      "name": "News",
-      "version": ""
-    },
-    {
-      "type": "panel",
       "id": "text",
       "name": "Text",
       "version": ""
@@ -55,50 +49,10 @@
         "type": "datasource",
         "uid": "grafana"
       },
-      "description": "",
       "gridPos": {
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 0
-      },
-      "id": 3,
-      "links": [],
-      "options": {
-        "folderId": 0,
-        "includeVars": false,
-        "keepTime": false,
-        "maxItems": 30,
-        "query": "",
-        "showHeadings": true,
-        "showRecentlyViewed": true,
-        "showSearch": false,
-        "showStarred": true,
-        "tags": []
-      },
-      "pluginVersion": "10.1.4",
-      "tags": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "Dashboards",
-      "type": "dashlist"
-    },
-    {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "gridPos": {
-        "h": 11,
-        "w": 12,
-        "x": 12,
         "y": 0
       },
       "id": 123124,
@@ -131,18 +85,29 @@
         "type": "datasource",
         "uid": "grafana"
       },
+      "description": "",
       "gridPos": {
-        "h": 18,
+        "h": 11,
         "w": 12,
-        "x": 0,
-        "y": 11
+        "x": 12,
+        "y": 0
       },
-      "id": 4,
+      "id": 3,
       "links": [],
       "options": {
-        "feedUrl": "https://grafana.com/blog/news.xml",
-        "showImage": true
+        "folderId": 0,
+        "includeVars": false,
+        "keepTime": false,
+        "maxItems": 30,
+        "query": "",
+        "showHeadings": true,
+        "showRecentlyViewed": false,
+        "showSearch": true,
+        "showStarred": true,
+        "tags": []
       },
+      "pluginVersion": "10.1.4",
+      "tags": [],
       "targets": [
         {
           "datasource": {
@@ -152,8 +117,8 @@
           "refId": "A"
         }
       ],
-      "title": "Latest from the blog",
-      "type": "news"
+      "title": "Dashboards",
+      "type": "dashlist"
     },
     {
       "datasource": {
@@ -163,7 +128,7 @@
       "gridPos": {
         "h": 18,
         "w": 12,
-        "x": 12,
+        "x": 0,
         "y": 11
       },
       "id": 123125,
@@ -221,7 +186,7 @@
   },
   "timezone": "browser",
   "title": "WLAN Pi Home",
-  "uid": "d0e927da-7db6-4d39-b60c-f791b823b3a5",
+  "uid": "bb500e12-86c6-40ea-932c-71a36129407a",
   "version": 1,
   "weekStart": ""
 }
