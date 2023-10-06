@@ -1,0 +1,228 @@
+{
+  "__inputs": [],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "ae3e-plotly-panel",
+      "name": "Plotly panel",
+      "version": "0.5.0"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.1.4"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.4",
+      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > MetaGeek Wi-Spy DBx > press Play button",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "config": "",
+        "data": "",
+        "layout": {
+          "legend": {
+            "title": {
+              "text": "Amplitude"
+            }
+          },
+          "paper_bgcolor": "#000",
+          "plot_bgcolor": "#000",
+          "title": {
+            "text": "WiSpy Amplitude"
+          },
+          "xaxis": {
+            "autorange": true,
+            "range": [
+              2399.83335,
+              2494.8334000000004
+            ],
+            "title": {
+              "text": "Freq"
+            },
+            "type": "linear"
+          },
+          "yaxis": {
+            "autorange": false,
+            "range": [
+              -100,
+              -33
+            ],
+            "title": {
+              "text": "Amp"
+            },
+            "type": "linear"
+          }
+        },
+        "onclick": "console.log(data)\n//window.updateVariables({query:{'var-project':'test'}, partial: true})",
+        "script": "//console.log(data);\nvar t = data.series[0].fields.shift();\n//console.log(t);\nvar xs = [];\nvar ys = [];\nvar zs = []\nfor (var x in data.series[0].fields) {\n  //console.log(data.series[0].fields[x].name);\n  xs.push(data.series[0].fields[x].name);\n}\n//console.log(xs);\nfor (var y in data.series[0].fields) {\n  //console.log(data.series[0].fields[y].name);\n  ys.push(data.series[0].fields[y].values.buffer.lastItem);\n  //for (var bb in data.series[0].fields[y].values.buffer) {\n    //zs.push(bb)\n  //}\n}\n\n//console.log(ys);\nvar trace = {\n  \"type\": \"heatmap\",\n  \"x\": xs,\n  \"y\": ys,\n  \"z\": ys,\n  \"colorscale\": \"Jet\",\n  \"zmin\": -100,\n  \"zmax\": -30,\n};\n//console.log(trace);\nreturn {data:[trace]};"
+      },
+      "targets": [
+        {
+          "channel": "stream/wispy/wispy2",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "Wi-Spy Live",
+      "type": "ae3e-plotly-panel"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 18,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 5,
+      "options": {
+        "config": "",
+        "data": "",
+        "layout": {
+          "legend": {
+            "title": {
+              "text": "Amplitude"
+            }
+          },
+          "paper_bgcolor": "#000",
+          "plot_bgcolor": "#000",
+          "title": {
+            "text": "WiSpy Waterfall"
+          },
+          "xaxis": {
+            "autorange": true,
+            "range": [
+              "2023-05-07 12:33:22.099",
+              "2023-05-07 12:38:22.654"
+            ],
+            "title": {
+              "text": "Time"
+            },
+            "type": "date"
+          },
+          "yaxis": {
+            "autorange": true,
+            "range": [
+              2494.8334000000004,
+              2399.83335
+            ],
+            "title": {
+              "text": "Freq"
+            },
+            "type": "linear"
+          }
+        },
+        "onclick": "console.log(data)\n//window.updateVariables({query:{'var-project':'test'}, partial: true})",
+        "script": "//console.log(data);\nvar t = data.series[0].fields.shift();\n//console.log(t);\nvar xs = [];\nvar ys = [];\nvar zs = [];\nfor (var x in data.series[0].fields) {\n  //console.log(data.series[0].fields[x].name);\n  xs.push(data.series[0].fields[x].name);\n}\n\nfor (var y in t.values.buffer) {\n  //console.log(t.values.buffer[y]);\n  ys.push(t.values.buffer[y]);\n}\n//console.log(xs);\nfor (var z in data.series[0].fields) {\n  //console.log(data.series[0].fields[y]);\n  zs.push(data.series[0].fields[z].values.buffer);\n}\n//console.log(ys);\nvar trace = {\n  \"type\": \"heatmap\",\n  \"x\": ys,\n  \"y\": xs,\n  \"z\": zs,\n  \"colorscale\": \"Jet\",\n  \"zmin\": -100,\n  \"zmax\": -30,\n};\n//console.log(trace);\nreturn {data:[trace]};"
+      },
+      "targets": [
+        {
+          "channel": "stream/wispy/wispy2",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "Wi-Spy Waterfall",
+      "type": "ae3e-plotly-panel"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "MetaGeek Wi-Spy DBx",
+  "uid": "hFpoOH_7k",
+  "version": 3,
+  "weekStart": ""
+}
