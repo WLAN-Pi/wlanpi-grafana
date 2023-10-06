@@ -84,7 +84,7 @@
         "mode": "markdown"
       },
       "pluginVersion": "10.1.4",
-      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > Pi Health > press Play button",
+      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > WLAN Pi Health > press Play button",
       "type": "text"
     },
     {
@@ -1012,7 +1012,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Pi Health",
+  "title": "WLAN Pi Health",
   "uid": "f4ebf2ca-94c6-462a-9ed2-276f92fe32e4",
   "version": 3,
   "weekStart": ""
