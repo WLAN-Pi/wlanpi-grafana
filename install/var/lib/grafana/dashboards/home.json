@@ -50,7 +50,7 @@
         "uid": "grafana"
       },
       "gridPos": {
-        "h": 11,
+        "h": 12,
         "w": 12,
         "x": 0,
         "y": 0
@@ -87,7 +87,7 @@
       },
       "description": "",
       "gridPos": {
-        "h": 11,
+        "h": 12,
         "w": 12,
         "x": 12,
         "y": 0
@@ -101,8 +101,8 @@
         "maxItems": 30,
         "query": "",
         "showHeadings": true,
-        "showRecentlyViewed": false,
-        "showSearch": true,
+        "showRecentlyViewed": true,
+        "showSearch": false,
         "showStarred": true,
         "tags": []
       },
@@ -126,10 +126,10 @@
         "uid": "grafana"
       },
       "gridPos": {
-        "h": 18,
+        "h": 6,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 123125,
       "options": {
@@ -185,8 +185,8 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "WLAN Pi Home",
-  "uid": "bb500e12-86c6-40ea-932c-71a36129407a",
+  "title": "Home",
+  "uid": "d0e927da-7db6-4d39-b60c-f791b823b3a5",
   "version": 1,
   "weekStart": ""
 }
