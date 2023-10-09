@@ -28,6 +28,12 @@
     },
     {
       "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "timeseries",
       "name": "Time series",
       "version": ""
@@ -56,6 +62,31 @@
   "links": [],
   "liveNow": false,
   "panels": [
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 16,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.4",
+      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > WLAN Pi Health > press Play button",
+      "type": "text"
+    },
     {
       "datasource": {
         "type": "datasource",
@@ -91,7 +122,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 1,
       "options": {
@@ -195,7 +226,7 @@
         "h": 7,
         "w": 12,
         "x": 4,
-        "y": 0
+        "y": 1
       },
       "id": 7,
       "options": {
@@ -265,7 +296,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 7
+        "y": 8
       },
       "id": 2,
       "options": {
@@ -369,7 +400,7 @@
         "h": 7,
         "w": 12,
         "x": 4,
-        "y": 7
+        "y": 8
       },
       "id": 8,
       "options": {
@@ -474,7 +505,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 14
+        "y": 15
       },
       "id": 6,
       "options": {
@@ -593,7 +624,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 14
+        "y": 15
       },
       "id": 4,
       "options": {
@@ -748,7 +779,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 14
+        "y": 15
       },
       "id": 9,
       "options": {
@@ -833,7 +864,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 14
+        "y": 15
       },
       "id": 5,
       "options": {
@@ -915,8 +946,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -932,7 +962,7 @@
         "h": 7,
         "w": 16,
         "x": 0,
-        "y": 21
+        "y": 22
       },
       "id": 10,
       "options": {
@@ -969,7 +999,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -977,13 +1007,13 @@
     "list": []
   },
   "time": {
-    "from": "2023-10-02T09:34:59.663Z",
-    "to": "2023-10-02T09:37:41.179Z"
+    "from": "now-5m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "WLAN Pi Health",
   "uid": "f4ebf2ca-94c6-462a-9ed2-276f92fe32e4",
-  "version": 7,
+  "version": 3,
   "weekStart": ""
 }

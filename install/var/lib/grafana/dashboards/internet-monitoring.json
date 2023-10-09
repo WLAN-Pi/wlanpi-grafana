@@ -3,10 +3,22 @@
   "__elements": {},
   "__requires": [
     {
+      "type": "panel",
+      "id": "canvas",
+      "name": "Canvas",
+      "version": ""
+    },
+    {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
       "version": "10.1.4"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
     },
     {
       "type": "panel",
@@ -38,6 +50,304 @@
   "links": [],
   "liveNow": false,
   "panels": [
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "description": "",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": " ",
+        "mode": "html"
+      },
+      "pluginVersion": "10.1.4",
+      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > Internet Monitoring > press Play button",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 5,
+      "options": {
+        "inlineEditing": true,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            },
+            "image": {
+              "fixed": "img/bg/internet-monitoring-diagram.png"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Ping Default Gateway"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 2",
+              "placement": {
+                "height": 50,
+                "left": 305,
+                "top": 210,
+                "width": 174
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "blue"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Download Speed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 3",
+              "placement": {
+                "height": 50,
+                "left": 45,
+                "top": 132,
+                "width": 174
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "red"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Upload Speed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 5",
+              "placement": {
+                "height": 50,
+                "left": 223,
+                "top": 134,
+                "width": 174
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Ping Internet Services"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 6",
+              "placement": {
+                "height": 37,
+                "left": 282,
+                "top": 41,
+                "width": 227
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "DNS Resolution"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 7",
+              "placement": {
+                "height": 50,
+                "left": -8,
+                "top": 35,
+                "width": 174
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "WLAN Pi Sensor"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 8",
+              "placement": {
+                "height": 50,
+                "left": 286,
+                "top": 339,
+                "width": 174
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1696545488731",
+          "type": "frame"
+        },
+        "showAdvancedTypes": true
+      },
+      "pluginVersion": "10.1.4",
+      "title": "Topology",
+      "type": "canvas"
+    },
     {
       "datasource": {
         "type": "datasource",
@@ -101,8 +411,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 0
+        "x": 12,
+        "y": 1
       },
       "id": 3,
       "options": {
@@ -127,14 +437,15 @@
           "filter": {
             "fields": [
               "time",
-              "download"
+              "download",
+              "upload"
             ]
           },
           "queryType": "measurements",
           "refId": "A"
         }
       ],
-      "title": "Download speed",
+      "title": "Download and Upload Speed",
       "type": "timeseries"
     },
     {
@@ -201,7 +512,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 9
       },
       "id": 2,
       "options": {
@@ -236,101 +547,6 @@
         }
       ],
       "title": "Round-Trip Time",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-RdYlGr"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 8
-      },
-      "id": 1,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "channel": "stream/internet/internet",
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
-          "filter": {
-            "fields": [
-              "time",
-              "upload"
-            ]
-          },
-          "queryType": "measurements",
-          "refId": "A"
-        }
-      ],
-      "title": "Upload speed",
       "type": "timeseries"
     },
     {
@@ -395,8 +611,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 8
+        "x": 0,
+        "y": 14
       },
       "id": 4,
       "options": {
@@ -447,8 +663,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "WLAN Pi Internet",
+  "title": "Internet Monitoring",
   "uid": "c6ae5ee1-1067-42dd-8428-8d36ee4c59e5",
-  "version": 17,
+  "version": 16,
   "weekStart": ""
 }

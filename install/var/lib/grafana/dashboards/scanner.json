@@ -6,12 +6,18 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.0.3"
+      "version": "10.1.4"
     },
     {
       "type": "panel",
       "id": "table",
       "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
       "version": ""
     },
     {
@@ -55,6 +61,31 @@
         "type": "datasource",
         "uid": "grafana"
       },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.4",
+      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > Scanner > press Play button",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -76,6 +107,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineStyle": {
               "fill": "solid"
@@ -126,7 +158,7 @@
         "h": 15,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 5,
       "options": {
@@ -306,7 +338,7 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 16
       },
       "id": 6,
       "options": {
@@ -328,7 +360,7 @@
           }
         ]
       },
-      "pluginVersion": "10.0.3",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "channel": "stream/nlscan/nlscan",
@@ -418,8 +450,8 @@
     "nowDelay": ""
   },
   "timezone": "",
-  "title": "WLAN Pi Scanner",
+  "title": "Scanner",
   "uid": "Vpigcr04z",
-  "version": 49,
+  "version": 3,
   "weekStart": ""
 }

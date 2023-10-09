@@ -1,4 +1,26 @@
 {
+  "__inputs": [],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "ae3e-plotly-panel",
+      "name": "Plotly panel",
+      "version": "0.5.0"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.1.4"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -24,7 +46,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -34,10 +56,35 @@
         "uid": "grafana"
       },
       "gridPos": {
-        "h": 14,
+        "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
+      },
+      "id": 6,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.4",
+      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > MetaGeek Wi-Spy DBx > press Play button",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 1
       },
       "id": 4,
       "options": {
@@ -103,7 +150,7 @@
         "h": 18,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 15
       },
       "id": 5,
       "options": {
@@ -161,7 +208,8 @@
       "type": "ae3e-plotly-panel"
     }
   ],
-  "schemaVersion": 37,
+  "refresh": "",
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -173,8 +221,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "WLAN Pi MetaGeek Wi-Spy",
+  "title": "MetaGeek Wi-Spy DBx",
   "uid": "hFpoOH_7k",
-  "version": 5,
+  "version": 3,
   "weekStart": ""
 }
