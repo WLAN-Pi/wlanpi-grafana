@@ -102,6 +102,7 @@
         "y": 2
       },
       "id": 4,
+      "maxDataPoints": 4096,
       "options": {
         "config": "",
         "data": "",

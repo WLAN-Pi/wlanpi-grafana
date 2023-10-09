@@ -87,6 +87,7 @@
         "y": 1
       },
       "id": 4,
+      "maxDataPoints": 4096,
       "options": {
         "config": "",
         "data": "",
@@ -153,6 +154,7 @@
         "y": 15
       },
       "id": 5,
+      "maxDataPoints": 999999,
       "options": {
         "config": "",
         "data": "",

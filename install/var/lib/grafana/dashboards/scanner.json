@@ -161,6 +161,7 @@
         "y": 1
       },
       "id": 5,
+      "maxDataPoints": 999999,
       "options": {
         "legend": {
           "calcs": [
@@ -341,6 +342,7 @@
         "y": 16
       },
       "id": 6,
+      "maxDataPoints": 999999,
       "options": {
         "cellHeight": "sm",
         "footer": {

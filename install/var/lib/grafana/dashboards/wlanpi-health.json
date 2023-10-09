@@ -125,6 +125,7 @@
         "y": 1
       },
       "id": 1,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -229,6 +230,7 @@
         "y": 1
       },
       "id": 7,
+      "maxDataPoints": 999999,
       "options": {
         "legend": {
           "calcs": [],
@@ -299,6 +301,7 @@
         "y": 8
       },
       "id": 2,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -403,6 +406,7 @@
         "y": 8
       },
       "id": 8,
+      "maxDataPoints": 999999,
       "options": {
         "legend": {
           "calcs": [],
@@ -508,6 +512,7 @@
         "y": 15
       },
       "id": 6,
+      "maxDataPoints": 999999,
       "options": {
         "displayLabels": [],
         "legend": {
@@ -627,6 +632,7 @@
         "y": 15
       },
       "id": 4,
+      "maxDataPoints": 999999,
       "options": {
         "orientation": "auto",
         "reduceOptions": {
@@ -782,6 +788,7 @@
         "y": 15
       },
       "id": 9,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -867,6 +874,7 @@
         "y": 15
       },
       "id": 5,
+      "maxDataPoints": 999999,
       "options": {
         "orientation": "auto",
         "reduceOptions": {
@@ -965,6 +973,7 @@
         "y": 22
       },
       "id": 10,
+      "maxDataPoints": 999999,
       "options": {
         "legend": {
           "calcs": [],
