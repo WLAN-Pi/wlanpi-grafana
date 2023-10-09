@@ -230,7 +230,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Ping Default Gateway"
+                  "fixed": "Ping Default Gateway [ms]:"
                 },
                 "valign": "middle"
               },
@@ -243,7 +243,7 @@
                 "height": 50,
                 "left": 305,
                 "top": 210,
-                "width": 174
+                "width": 211
               },
               "type": "text"
             },
@@ -335,7 +335,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Ping Internet Services"
+                  "fixed": "Ping Google [ms]:"
                 },
                 "valign": "middle"
               },
@@ -347,7 +347,7 @@
               "name": "Element 6",
               "placement": {
                 "height": 37,
-                "left": 276,
+                "left": 254,
                 "top": 40,
                 "width": 227
               },
@@ -426,7 +426,7 @@
             {
               "background": {
                 "color": {
-                  "fixed": "orange"
+                  "fixed": "transparent"
                 }
               },
               "border": {
@@ -435,11 +435,11 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "left",
                 "color": {
-                  "fixed": "#000000"
+                  "fixed": "text"
                 },
-                "size": 20,
+                "size": 16,
                 "text": {
                   "field": "rtt_gateway",
                   "fixed": "",
@@ -455,16 +455,16 @@
               "name": "Element 9",
               "placement": {
                 "height": 35,
-                "left": 490,
+                "left": 524,
                 "top": 218,
-                "width": 90
+                "width": 60
               },
               "type": "metric-value"
             },
             {
               "background": {
                 "color": {
-                  "fixed": "orange"
+                  "fixed": "transparent"
                 }
               },
               "border": {
@@ -473,11 +473,11 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "left",
                 "color": {
-                  "fixed": "#000000"
+                  "fixed": "text"
                 },
-                "size": 20,
+                "size": 16,
                 "text": {
                   "field": "rtt_google",
                   "fixed": "",
@@ -492,9 +492,9 @@
               "name": "Element 10",
               "placement": {
                 "height": 35,
-                "left": 492,
+                "left": 445,
                 "top": 41,
-                "width": 90
+                "width": 60
               },
               "type": "metric-value"
             }
@@ -529,7 +529,7 @@
           "refId": "A"
         }
       ],
-      "title": "Topology",
+      "title": "Network Topology",
       "type": "canvas"
     },
     {
@@ -834,7 +834,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -842,13 +842,13 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Internet Monitoring",
   "uid": "c6ae5ee1-1067-42dd-8428-8d36ee4c59e4",
-  "version": 13,
+  "version": 4,
   "weekStart": ""
 }
