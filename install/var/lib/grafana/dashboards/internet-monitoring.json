@@ -186,7 +186,82 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "download"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "upload"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rtt_gateway"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rtt_google"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dns1_res_time_google wlanpi-ed8"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 13,
@@ -230,10 +305,11 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Ping Default Gateway [ms]:"
+                  "fixed": "Ping Default Gateway"
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -276,8 +352,8 @@
               "name": "Element 3",
               "placement": {
                 "height": 50,
-                "left": 45,
-                "top": 132,
+                "left": 50,
+                "top": 127,
                 "width": 174
               },
               "type": "text"
@@ -296,7 +372,7 @@
               "config": {
                 "align": "center",
                 "color": {
-                  "fixed": "semi-dark-red"
+                  "fixed": "red"
                 },
                 "size": 16,
                 "text": {
@@ -312,7 +388,7 @@
               "placement": {
                 "height": 50,
                 "left": 232,
-                "top": 133,
+                "top": 126,
                 "width": 174
               },
               "type": "text"
@@ -335,7 +411,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Ping Google [ms]:"
+                  "fixed": "Ping Google"
                 },
                 "valign": "middle"
               },
@@ -347,8 +423,8 @@
               "name": "Element 6",
               "placement": {
                 "height": 37,
-                "left": 254,
-                "top": 40,
+                "left": 247,
+                "top": 47,
                 "width": 227
               },
               "type": "text"
@@ -382,8 +458,8 @@
               "name": "Element 7",
               "placement": {
                 "height": 50,
-                "left": -8,
-                "top": 35,
+                "left": -4,
+                "top": 37,
                 "width": 174
               },
               "type": "text"
@@ -455,9 +531,9 @@
               "name": "Element 9",
               "placement": {
                 "height": 35,
-                "left": 524,
-                "top": 218,
-                "width": 60
+                "left": 373,
+                "top": 242,
+                "width": 80
               },
               "type": "metric-value"
             },
@@ -492,9 +568,120 @@
               "name": "Element 10",
               "placement": {
                 "height": 35,
-                "left": 445,
-                "top": 41,
+                "left": 329,
+                "top": 71,
                 "width": 60
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "red"
+                },
+                "size": 16,
+                "text": {
+                  "field": "upload",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 11",
+              "placement": {
+                "height": 35,
+                "left": 277,
+                "top": 158,
+                "width": 107
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "blue"
+                },
+                "size": 16,
+                "text": {
+                  "field": "download",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 12",
+              "placement": {
+                "height": 35,
+                "left": 102,
+                "top": 158,
+                "width": 107
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "text"
+                },
+                "size": 16,
+                "text": {
+                  "field": "dns1_res_time_google wlanpi-ed8",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 13",
+              "placement": {
+                "height": 35,
+                "left": 63,
+                "top": 68,
+                "width": 80
               },
               "type": "metric-value"
             }
@@ -834,7 +1021,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -849,6 +1036,6 @@
   "timezone": "",
   "title": "Internet Monitoring",
   "uid": "c6ae5ee1-1067-42dd-8428-8d36ee4c59e4",
-  "version": 4,
+  "version": 3,
   "weekStart": ""
 }
