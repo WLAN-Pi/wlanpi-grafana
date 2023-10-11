@@ -126,7 +126,7 @@
           }
         },
         "onclick": "console.log(data)\n//window.updateVariables({query:{'var-project':'test'}, partial: true})",
-        "script": "//console.log(data);\nvar t = data.series[0].fields.shift();\n//console.log(t);\nvar xs = [];\nvar ys = [];\nvar zs = []\nfor (var x in data.series[0].fields) {\n  //console.log(data.series[0].fields[x].name);\n  xs.push(data.series[0].fields[x].name);\n}\n//console.log(xs);\nfor (var y in data.series[0].fields) {\n  //console.log(data.series[0].fields[y].name);\n  ys.push(data.series[0].fields[y].values.buffer.lastItem);\n  //for (var bb in data.series[0].fields[y].values.buffer) {\n    //zs.push(bb)\n  //}\n}\n\n//console.log(ys);\nvar trace = {\n  \"type\": \"heatmap\",\n  \"x\": xs,\n  \"y\": ys,\n  \"z\": ys,\n  \"colorscale\": \"Jet\",\n  \"zmin\": -100,\n  \"zmax\": -30,\n};\n//console.log(trace);\nreturn {data:[trace]};"
+        "script": "//console.log(data);\nvar t = data.series[0].fields.shift();\n//console.log(t);\nvar xs = [];\nvar ys = [];\nvar zs = [];\n\nfor (var x in data.series[0].fields) {\n  //console.log(data.series[0].fields[x].name);\n  xs.push(data.series[0].fields[x].name);\n}\n//console.log(xs);\nfor (var y in data.series[0].fields) {\n  //console.log(data.series[0].fields[y].name);\n  ys.push(data.series[0].fields[y].values.lastItem);\n}\n\nvar total = 0;\nfor (var j = 0; j < data.series[0].fields.length; j++) {\n  total = 0;\n  for(var i = 0; i < data.series[0].fields[j].values.length; i++) {\n    total += data.series[0].fields[j].values[i];\n  }\n  //console.log(total);\n  var avg = total / data.series[0].fields[j].values.length;\n  //console.log(avg);\n  zs.push(avg);\n}\n//console.log(ys);\nvar trace = {\n  \"type\": \"heatmap\",\n  \"x\": xs,\n  \"y\": ys,\n  \"z\": zs,\n  \"colorscale\": \"Jet\",\n  \"zmin\": -100,\n  \"zmax\": -30,\n  \"connectgaps\": false,\n  \"hoverongaps\": true,\n  \"transpose\": false\n};\n//console.log(trace);\nreturn {data:[trace]};"
       },
       "targets": [
         {
@@ -172,8 +172,8 @@
           "xaxis": {
             "autorange": true,
             "range": [
-              "2023-05-07 12:33:22.099",
-              "2023-05-07 12:38:22.654"
+              "2023-10-11 09:13:07.0985",
+              "2023-10-11 09:18:07.904"
             ],
             "title": {
               "text": "Time"
@@ -193,7 +193,7 @@
           }
         },
         "onclick": "console.log(data)\n//window.updateVariables({query:{'var-project':'test'}, partial: true})",
-        "script": "//console.log(data);\nvar t = data.series[0].fields.shift();\n//console.log(t);\nvar xs = [];\nvar ys = [];\nvar zs = [];\nfor (var x in data.series[0].fields) {\n  //console.log(data.series[0].fields[x].name);\n  xs.push(data.series[0].fields[x].name);\n}\n\nfor (var y in t.values.buffer) {\n  //console.log(t.values.buffer[y]);\n  ys.push(t.values.buffer[y]);\n}\n//console.log(xs);\nfor (var z in data.series[0].fields) {\n  //console.log(data.series[0].fields[y]);\n  zs.push(data.series[0].fields[z].values.buffer);\n}\n//console.log(ys);\nvar trace = {\n  \"type\": \"heatmap\",\n  \"x\": ys,\n  \"y\": xs,\n  \"z\": zs,\n  \"colorscale\": \"Jet\",\n  \"zmin\": -100,\n  \"zmax\": -30,\n};\n//console.log(trace);\nreturn {data:[trace]};"
+        "script": "//console.log(data);\nvar t = data.series[0].fields.shift();\n//console.log(t);\nvar xs = [];\nvar ys = [];\nvar zs = [];\nfor (var x in data.series[0].fields) {\n  //console.log(data.series[0].fields[x].name);\n  xs.push(data.series[0].fields[x].name);\n}\n\nfor (var y in t.values) {\n  //console.log(t.values[y]);\n  ys.push(t.values[y]);\n}\n//console.log(xs);\nfor (var z in data.series[0].fields) {\n  //console.log(data.series[0].fields[y]);\n  zs.push(data.series[0].fields[z].values);\n}\n//console.log(ys);\nvar trace = {\n  \"type\": \"heatmap\",\n  \"x\": ys,\n  \"y\": xs,\n  \"z\": zs,\n  \"colorscale\": \"Jet\",\n  \"zmin\": -100,\n  \"zmax\": -30,\n};\n//console.log(trace);\nreturn {data:[trace]};"
       },
       "targets": [
         {
