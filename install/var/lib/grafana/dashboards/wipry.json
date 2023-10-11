@@ -1,14 +1,5 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_INFLUXDB",
-      "label": "InfluxDB",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    }
-  ],
+  "__inputs": [],
   "__elements": {},
   "__requires": [
     {
@@ -21,13 +12,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.0.3"
-    },
-    {
-      "type": "datasource",
-      "id": "influxdb",
-      "name": "InfluxDB",
-      "version": "1.0.0"
+      "version": "10.1.4"
     },
     {
       "type": "panel",
@@ -67,27 +52,27 @@
   "panels": [
     {
       "datasource": {
-        "type": "influxdb",
-        "uid": "${DS_INFLUXDB}"
+        "type": "datasource",
+        "uid": "grafana"
       },
       "gridPos": {
-        "h": 2,
+        "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 8,
+      "id": 9,
       "options": {
         "code": {
-          "language": "html",
-          "showLineNumbers": true,
+          "language": "plaintext",
+          "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<a>Start WiPry 2.4 GHz</a> |\n<a>Start WiPry 5 GHz</a> |\n<a>Start WiPry 6 GHz</a> |\n<a>⏹ Stop WiPry</a>\n",
-        "mode": "html"
+        "content": "",
+        "mode": "markdown"
       },
-      "pluginVersion": "10.0.3",
-      "title": "WiPry Control",
+      "pluginVersion": "10.1.4",
+      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > Oscium WiPry Clarity > press Play button",
       "type": "text"
     },
     {
@@ -99,7 +84,7 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 2
+        "y": 1
       },
       "id": 4,
       "maxDataPoints": 4096,
@@ -166,7 +151,7 @@
         "h": 18,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 15
       },
       "id": 5,
       "maxDataPoints": 999999,
@@ -240,6 +225,6 @@
   "timezone": "",
   "title": "Oscium WiPry Clarity",
   "uid": "cc3dc3a2-6982-4e88-82fa-e3abc10454c3",
-  "version": 13,
+  "version": 2,
   "weekStart": ""
 }
