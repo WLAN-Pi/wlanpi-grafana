@@ -1,4 +1,26 @@
 {
+  "__inputs": [],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.1.5"
+    },
+    {
+      "type": "panel",
+      "id": "innius-video-panel",
+      "name": "Video",
+      "version": "1.0.7"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -18,7 +40,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 7,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -96,7 +118,7 @@
       "type": "innius-video-panel"
     }
   ],
-  "refresh": "1m",
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -111,6 +133,6 @@
   "timezone": "",
   "title": "NASA TV Channel",
   "uid": "e77b02b6-8763-40b8-a50c-3b3365fbaa2c",
-  "version": 6,
+  "version": 11,
   "weekStart": ""
 }
