@@ -1,4 +1,4 @@
-wlanpi-grafana (1.0.6-19) unstable; urgency=medium
+wlanpi-grafana (1.0.6-20) unstable; urgency=medium
 
   * Update dashboards
   * Refactor Internet Monitoring data collection script, add online/offline internet status

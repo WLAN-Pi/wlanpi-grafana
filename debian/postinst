@@ -36,6 +36,7 @@ fi
 # Install plugins
 echo "Installing Grafana plugins"
 grafana-cli plugins install ae3e-plotly-panel
+grafana-cli plugins install innius-video-panel
 
 # Start Grafana service and then change password, password change needs to happen only after the service has started at least once
 

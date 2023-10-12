@@ -1,38 +1,4 @@
 {
-  "__inputs": [],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "canvas",
-      "name": "Canvas",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "10.1.4"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "text",
-      "name": "Text",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -52,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -285,6 +251,10 @@
             "color": {
               "fixed": "dark-green"
             }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
           },
           "elements": [
             {
@@ -687,6 +657,12 @@
             }
           ],
           "name": "Element 1696545488731",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100
+          },
           "type": "frame"
         },
         "showAdvancedTypes": true
@@ -718,6 +694,29 @@
       ],
       "title": "Network Topology",
       "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 2
+      },
+      "id": 10,
+      "options": {
+        "autoPlay": false,
+        "customBackground": false,
+        "geolocate": false,
+        "loop": true,
+        "videoId": "87GfE07QZdc",
+        "videoType": "youtube"
+      },
+      "title": "YouTube Video Playback",
+      "type": "innius-video-panel"
     },
     {
       "datasource": {
@@ -782,8 +781,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 2
+        "x": 0,
+        "y": 15
       },
       "id": 3,
       "options": {
@@ -883,7 +882,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 15
       },
       "id": 2,
       "options": {
@@ -983,7 +982,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 15
+        "y": 23
       },
       "id": 4,
       "options": {
@@ -1036,6 +1035,6 @@
   "timezone": "",
   "title": "Internet Monitoring",
   "uid": "c6ae5ee1-1067-42dd-8428-8d36ee4c59e4",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
