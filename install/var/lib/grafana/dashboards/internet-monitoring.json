@@ -712,10 +712,10 @@
         "customBackground": false,
         "geolocate": false,
         "loop": true,
-        "videoId": "87GfE07QZdc",
+        "videoId": "PyNuRpZOtAY",
         "videoType": "youtube"
       },
-      "title": "YouTube Video Playback",
+      "title": "YouTube Live Video Stream Playback",
       "type": "innius-video-panel"
     },
     {
