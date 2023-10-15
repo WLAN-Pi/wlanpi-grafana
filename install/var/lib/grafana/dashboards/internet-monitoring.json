@@ -286,10 +286,6 @@
               "fixed": "dark-green"
             }
           },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
           "elements": [
             {
               "background": {
@@ -349,6 +345,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -490,6 +487,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -535,9 +533,9 @@
               "name": "Element 9",
               "placement": {
                 "height": 35,
-                "left": 373,
+                "left": 368,
                 "top": 242,
-                "width": 80
+                "width": 100
               },
               "type": "metric-value"
             },
@@ -574,7 +572,7 @@
                 "height": 35,
                 "left": 329,
                 "top": 71,
-                "width": 60
+                "width": 100
               },
               "type": "metric-value"
             },
@@ -611,7 +609,7 @@
                 "height": 35,
                 "left": 277,
                 "top": 158,
-                "width": 107
+                "width": 100
               },
               "type": "metric-value"
             },
@@ -646,9 +644,9 @@
               "name": "Element 12",
               "placement": {
                 "height": 35,
-                "left": 102,
+                "left": 100,
                 "top": 158,
-                "width": 107
+                "width": 100
               },
               "type": "metric-value"
             },
@@ -683,20 +681,14 @@
               "name": "Element 13",
               "placement": {
                 "height": 35,
-                "left": 63,
-                "top": 68,
-                "width": 80
+                "left": 58,
+                "top": 67,
+                "width": 100
               },
               "type": "metric-value"
             }
           ],
           "name": "Element 1696545488731",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "top": 0,
-            "width": 100
-          },
           "type": "frame"
         },
         "showAdvancedTypes": true
