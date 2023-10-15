@@ -252,7 +252,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "dns1_res_time_google wlanpi-ed8"
+              "options": "dns1_res_time_google"
             },
             "properties": [
               {
@@ -670,7 +670,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "dns1_res_time_google wlanpi-ed8",
+                  "field": "dns1_res_time_google",
                   "fixed": "",
                   "mode": "field"
                 },
