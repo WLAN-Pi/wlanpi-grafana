@@ -32,12 +32,16 @@ dns1_res_time_apple=$(dig +time=2 +tries=1 @"$primary_dns_server" NS apple.com |
 if [ -z "$dns1_res_time_apple" ]; then dns1_res_time_apple="-1"; fi
 dns1_res_time_aws=$(dig +time=2 +tries=1 @"$primary_dns_server" NS amazonaws.com | grep "Query time:" | cut -d ' ' -f4)
 if [ -z "$dns1_res_time_aws" ]; then dns1_res_time_aws="-1"; fi
-speedtest_result=$(speedtest-cli --secure --json)
-rtt_speedtest=$(echo "$speedtest_result" | jq -r ".ping")
+
+speedtest_result=$(librespeed-cli --json)
+# Sample output of librespeed-cli --json
+# [{"timestamp":"2023-10-16T07:57:21.667623717-05:00","server":{"name":"London, England (Clouvider)","url":"http://lon.speedtest.clouvider.net/backend"},"client":{"ip":"","hostname":"","city":"","region":"","country":"","loc":"","org":"","postal":"","timezone":""},"bytes_sent":991330304,"bytes_received":1761691176,"ping":9,"jitter":0.25,"upload":508.29,"download":903.39,"share":""}]
+
+rtt_speedtest=$(echo "$speedtest_result" | jq -r '.[0].ping')
 rtt_google=$(ping -c1 google.com | grep "rtt" | cut -d"/" -f5)
 rtt_gateway=$(ping -c1 "$default_gateway" | grep "rtt" | cut -d"/" -f5)
-download=$(echo "$speedtest_result" | jq -r ".download")
-upload=$(echo "$speedtest_result" | jq -r ".upload")
+download=$(echo "$speedtest_result" | jq -r '.[0].download')
+upload=$(echo "$speedtest_result" | jq -r '.[0].upload')
 
 # Generate final output
 cat <<-____HERE
