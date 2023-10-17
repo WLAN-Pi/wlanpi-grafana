@@ -4,8 +4,6 @@
 #
 #    pip-compile requirements.in
 #
---extra-index-url https://www.piwheels.org/simple
-
 certifi==2023.7.22
     # via requests
 charset-normalizer==3.2.0
@@ -16,5 +14,5 @@ python-dotenv==1.0.0
     # via -r requirements.in
 requests==2.31.0
     # via -r requirements.in
-urllib3==2.0.6
+urllib3==2.0.7
     # via requests
