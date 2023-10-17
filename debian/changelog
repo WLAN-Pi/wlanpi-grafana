@@ -1,11 +1,12 @@
-wlanpi-grafana (1.0.6-29) unstable; urgency=medium
+wlanpi-grafana (1.0.7) unstable; urgency=medium
 
   * Update dashboards
   * Refactor Internet Monitoring data collection script, add online/offline internet status
   * Replace speedtest-cli with librespeed-cli in Internet Monitoring
   * Add option to use Ookla Speedtest.net client in Internet Monitoring - manual steps required
+  * Fixed: speedtest needs to be executed as sudo speedtest when called by a Linux service
 
- -- Jiri Brejcha <jirka@jiribrejcha.net>  Mon, 02 Oct 2023 13:47:00 +0100
+ -- Jiri Brejcha <jirka@jiribrejcha.net>  Tue, 17 Oct 2023 13:47:00 +0100
 
 wlanpi-grafana (1.0.6) unstable; urgency=medium
 

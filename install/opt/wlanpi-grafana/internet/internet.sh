@@ -62,7 +62,7 @@ if [ "$speedtest_tool" -eq 0 ]; then
     upload=$(echo "$speedtest_result" | jq -r '.[0].upload')
 else
     # Use Ookla Speedtest.net to measure throughput if enabled by user
-    speedtest_result=$(speedtest -f json)
+    speedtest_result=$(sudo speedtest -f json)
     # Sample output
     # {"type":"result","timestamp":"2023-10-16T15:51:29Z","ping":{"jitter":0.824,"latency":8.928,"low":7.549,"high":9.718},"download":{"bandwidth":109643056,"bytes":996186976,"elapsed":9209,"latency":{"iqm":9.719,"low":7.923,"high":230.024,"jitter":3.306}},"upload":{"bandwidth":103091745,"bytes":1065890503,"elapsed":10503,"latency":{"iqm":16.415,"low":8.524,"high":26.067,"jitter":1.687}},"packetLoss":0,"isp":"Zen Internet Ltd","interface":{"internalIp":"192.168.199.1","name":"eth0","macAddr":"EE:55:11:AA:BB:CC","isVpn":false,"externalIp":"80.70.20.200"},"server":{"id":40788,"host":"speedtest02a.web.zen.net.uk","port":8080,"name":"Zen Internet","location":"London","country":"United Kingdom","ip":"51.148.82.21"},"result":{"id":"85adc2c1-xxxx-yyyy-bf4a-a54878dd50ec","url":"https://www.speedtest.net/result/c/85adc2c1-xxxx-yyyy-bf4a-a54878dd50ec","persisted":true}}
     rtt_speedtest=$(echo "$speedtest_result" | jq -r '.ping.latency')
