@@ -63,7 +63,7 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 21,
+        "w": 16,
         "x": 0,
         "y": 0
       },
@@ -80,6 +80,87 @@
       "pluginVersion": "10.1.5",
       "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > Internet Monitoring > press Play button",
       "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "blue",
+                  "index": 0,
+                  "text": "Librespeed"
+                },
+                "1": {
+                  "color": "blue",
+                  "index": 1,
+                  "text": "Speedtest.net"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.1.5",
+      "targets": [
+        {
+          "channel": "stream/internet/internet",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "filter": {
+            "fields": [
+              "time",
+              "speedtest_tool"
+            ]
+          },
+          "queryType": "measurements",
+          "refId": "A"
+        }
+      ],
+      "title": "Speedtest Tool",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -122,8 +203,8 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 3,
-        "x": 21,
+        "w": 4,
+        "x": 20,
         "y": 0
       },
       "id": 7,
@@ -285,6 +366,10 @@
             "color": {
               "fixed": "dark-green"
             }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
           },
           "elements": [
             {
@@ -689,6 +774,12 @@
             }
           ],
           "name": "Element 1696545488731",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100
+          },
           "type": "frame"
         },
         "showAdvancedTypes": true
@@ -1031,13 +1122,13 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Internet Monitoring",
   "uid": "c6ae5ee1-1067-42dd-8428-8d36ee4c59e4",
-  "version": 2,
+  "version": 4,
   "weekStart": ""
 }
