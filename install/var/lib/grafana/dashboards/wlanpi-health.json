@@ -12,7 +12,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.1.4"
+      "version": "10.1.5"
     },
     {
       "type": "panel",
@@ -83,7 +83,7 @@
         "content": "",
         "mode": "markdown"
       },
-      "pluginVersion": "10.1.4",
+      "pluginVersion": "10.1.5",
       "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > WLAN Pi Health > press Play button",
       "type": "text"
     },
@@ -140,7 +140,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.4",
+      "pluginVersion": "10.1.5",
       "targets": [
         {
           "channel": "stream/pihealth/pihealth",
@@ -169,7 +169,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -179,7 +179,7 @@
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 0,
-            "gradientMode": "none",
+            "gradientMode": "scheme",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -199,12 +199,13 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "area"
             }
           },
           "decimals": 0,
           "displayName": "CPU Used",
           "mappings": [],
+          "max": 100,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -316,7 +317,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.4",
+      "pluginVersion": "10.1.5",
       "targets": [
         {
           "channel": "stream/pihealth/pihealth",
@@ -345,7 +346,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -355,7 +356,7 @@
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 0,
-            "gradientMode": "none",
+            "gradientMode": "scheme",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -375,12 +376,13 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "area"
             }
           },
           "decimals": 0,
           "displayName": "MEM Used",
           "mappings": [],
+          "max": 100,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -645,7 +647,7 @@
         "showThresholdLabels": true,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "10.1.4",
+      "pluginVersion": "10.1.5",
       "targets": [
         {
           "channel": "stream/pihealth/pihealth",
@@ -803,7 +805,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.4",
+      "pluginVersion": "10.1.5",
       "targets": [
         {
           "channel": "stream/pihealth/pihealth",
@@ -887,7 +889,7 @@
         "showThresholdLabels": true,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "10.1.4",
+      "pluginVersion": "10.1.5",
       "targets": [
         {
           "channel": "stream/pihealth/pihealth",
@@ -954,7 +956,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1005,6 +1008,22 @@
         }
       ],
       "title": "SD Card Reads/Writes Per Second",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": ".*read.*",
+            "renamePattern": "Reads"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": ".*write.*",
+            "renamePattern": "Write"
+          }
+        }
+      ],
       "type": "timeseries"
     }
   ],
@@ -1016,13 +1035,13 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "WLAN Pi Health",
   "uid": "f4ebf2ca-94c6-462a-9ed2-276f92fe32e4",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }
