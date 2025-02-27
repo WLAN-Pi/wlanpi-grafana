@@ -1,32 +1,4 @@
 {
-  "__inputs": [],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "10.1.4"
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "text",
-      "name": "Text",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -52,14 +24,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 7,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
       },
       "gridPos": {
         "h": 1,
@@ -77,7 +48,7 @@
         "content": "",
         "mode": "markdown"
       },
-      "pluginVersion": "10.1.4",
+      "pluginVersion": "11.5.2",
       "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > Scanner > press Play button",
       "type": "text"
     },
@@ -86,12 +57,14 @@
         "type": "datasource",
         "uid": "grafana"
       },
+      "description": "From all interfaces",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -99,6 +72,7 @@
             "axisSoftMax": -30,
             "axisSoftMin": -90,
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -177,10 +151,12 @@
           "sortDesc": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "desc"
         }
       },
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "channel": "stream/nlscan/nlscan",
@@ -224,11 +200,13 @@
           "custom": {
             "align": "auto",
             "cellOptions": {
-              "type": "auto"
+              "type": "auto",
+              "wrapText": false
             },
             "filterable": true,
             "inspect": false
           },
+          "fieldMinMax": true,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -293,7 +271,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 119
+                "value": 110
               }
             ]
           },
@@ -305,7 +283,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 105
+                "value": 90
               }
             ]
           },
@@ -317,7 +295,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 156
+                "value": 128
               }
             ]
           },
@@ -330,6 +308,18 @@
               {
                 "id": "custom.width",
                 "value": 394
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ifname"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 96
               }
             ]
           }
@@ -362,7 +352,7 @@
           }
         ]
       },
-      "pluginVersion": "10.1.4",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "channel": "stream/nlscan/nlscan",
@@ -398,20 +388,23 @@
               "Field": true,
               "name": true
             },
+            "includeByName": {},
             "indexByName": {
               "Field": 0,
-              "Last *": 6,
-              "bssid": 1,
-              "channel": 3,
-              "freq": 4,
-              "name": 5,
-              "ssid": 2
+              "Last *": 7,
+              "bssid": 2,
+              "channel": 4,
+              "freq": 5,
+              "ifname": 1,
+              "name": 6,
+              "ssid": 3
             },
             "renameByName": {
               "Last *": "RSSI",
               "bssid": "BSSID",
               "channel": "Channel",
               "freq": "Frequency",
+              "ifname": "Interface",
               "name": "",
               "ssid": "SSID"
             }
@@ -437,9 +430,9 @@
       "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": []
@@ -454,6 +447,6 @@
   "timezone": "",
   "title": "Scanner",
   "uid": "Vpigcr04z",
-  "version": 3,
+  "version": 5,
   "weekStart": ""
 }
