@@ -1,0 +1,10 @@
+[Unit]
+Description=Streams data to WLAN Pi Grafana Scanner dashboard
+
+[Service]
+ExecStart=/opt/wlanpi-grafana/scanner/stream-scanner.sh wlan1
+WorkingDirectory=/opt/wlanpi-grafana/scanner
+EnvironmentFile=/etc/environment
+
+[Install]
+WantedBy=multi-user.target
