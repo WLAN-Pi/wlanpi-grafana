@@ -2,7 +2,7 @@
 Description=Streams data to WLAN Pi Grafana Scanner dashboard
 
 [Service]
-ExecStart=/opt/wlanpi-grafana/scanner/stream-scanner.sh
+ExecStart=/opt/wlanpi-grafana/scanner/stream-scanner.sh wlan0
 WorkingDirectory=/opt/wlanpi-grafana/scanner
 EnvironmentFile=/etc/environment
 
