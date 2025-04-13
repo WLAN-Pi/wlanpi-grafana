@@ -28,8 +28,8 @@ override_dh_auto_install:
 
 override_dh_installinit:
 	dh_installinit --name=wlanpi-grafana-scanner-wlan0
-        dh_installinit --name=wlanpi-grafana-scanner-wlan1
-        dh_installinit --name=wlanpi-grafana-scanner-wlan2
+	dh_installinit --name=wlanpi-grafana-scanner-wlan1
+	dh_installinit --name=wlanpi-grafana-scanner-wlan2
 	dh_installinit --name=wlanpi-grafana-wispy-24
 	dh_installinit --name=wlanpi-grafana-wispy-5
 	dh_installinit --name=wlanpi-grafana-health
@@ -41,8 +41,8 @@ override_dh_installinit:
 
 override_dh_systemd_start:
 	dh_systemd_start --no-start --name=wlanpi-grafana-scanner-wlan0
-        dh_systemd_start --no-start --name=wlanpi-grafana-scanner-wlan1
-        dh_systemd_start --no-start --name=wlanpi-grafana-scanner-wlan2
+	dh_systemd_start --no-start --name=wlanpi-grafana-scanner-wlan1
+	dh_systemd_start --no-start --name=wlanpi-grafana-scanner-wlan2
 	dh_systemd_start --no-start --name=wlanpi-grafana-wispy-24
 	dh_systemd_start --no-start --name=wlanpi-grafana-wispy-5
 	dh_systemd_start --no-start --name=wlanpi-grafana-health
