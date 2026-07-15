@@ -1,3 +1,13 @@
+wlanpi-grafana (1.0.11-3) unstable; urgency=medium
+
+  * Drop python3-distutils from Build-Depends and Pre-Depends. It was removed
+    in Debian trixie (distutils is gone from Python 3.12+); python3-setuptools
+    (already a build dep) and the venv-bundled setuptools provide it. This
+    unblocks the trixie build/install.
+  * Build for Debian trixie only.
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Wed, 15 Jul 2026 03:32:40 -0400
+
 wlanpi-grafana (1.0.11-2) unstable; urgency=medium
   
   * Migrate grafana items from wlanpi-common to wlanpi-grafana
