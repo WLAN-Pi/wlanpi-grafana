@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        distro: [bullseye,bookworm]
+        distro: [trixie]
         arch: [arm64]
     
     steps:
