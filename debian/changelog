@@ -1,3 +1,33 @@
+wlanpi-grafana (1.1.0) unstable; urgency=medium
+
+  * First working release on Debian trixie with Grafana 13.
+  * Fix installation with Grafana 13. The postinst called the deprecated
+    `grafana-cli`, which in Grafana 13 runs the grafana binary without
+    --homepath/--config and fails with "Grafana-server Init Failed",
+    aborting the postinst (set -e) and dpkg configure. Use the supported
+    `grafana cli` wrapper, which supplies the package paths.
+  * Pin Grafana to the 13.x series. Grafana 13 introduced the `grafana cli`
+    wrapper and removed the old `grafana-cli`/`grafana-server` binaries.
+  * Talk to Grafana directly on port 3000 in check-token.sh and to-grafana.sh.
+    The wlanpi-webui nginx /app/grafana location requires a webui session
+    (auth_request), so local API calls with basic auth were redirected to the
+    login page and service account/token creation failed.
+  * Look up the wlanpi service account ID and recreate its token cleanly
+    instead of assuming the account ID is 2 and the token name is unused.
+  * Ensure the self-signed-grafana TLS key is group-readable by grafana. When
+    wlanpi-core generated it before the grafana group existed, Grafana could
+    not read the key and crash-looped on startup.
+  * chown /var/lib/grafana/plugins to grafana after installing plugins as
+    root, otherwise Grafana cannot install or update plugins at runtime.
+  * Make build-time plugin installs non-fatal and add plugins.preinstall as a
+    runtime fallback, so a plugin catalog outage cannot fail the image build
+    or leave the image without the spectrum panels.
+  * The Grafana apt repository must be configured before this package is
+    installed; the `grafana` dependency is not provided by Debian or the
+    WLAN Pi repositories.
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Mon, 21 Sep 2026 18:00:00 -0400
+
 wlanpi-grafana (1.0.11-3) unstable; urgency=medium
 
   * Drop python3-distutils from Build-Depends and Pre-Depends. It was removed

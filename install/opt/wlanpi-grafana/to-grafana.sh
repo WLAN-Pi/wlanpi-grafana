@@ -3,5 +3,5 @@
 source /etc/environment
 
 while IFS= read -r line; do
-    curl -s --insecure -X POST -H "Authorization: Bearer $GRAFANA_TOKEN" -d "$line" https://localhost/app/grafana/api/live/push/$1
+    curl -s --insecure -X POST -H "Authorization: Bearer $GRAFANA_TOKEN" -d "$line" https://localhost:3000/app/grafana/api/live/push/$1
 done
