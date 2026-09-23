@@ -17,8 +17,8 @@ sdcard_writes=$(jq -r '.["kB_wrtn/s"]'  <<< "$iostat_output")
 
 #Return -1 if doesn't exist
 sda1_used=$(df | grep "/dev/sda1" | awk '{print $5}' | cut -d"%" -f1)
-if [ -z "$sda1_used"]; then sda1_used=-1; fi
+if [ -z "$sda1_used" ]; then sda1_used=-1; fi
 sdb1_used=$(df | grep "/dev/sdb1" | awk '{print $5}' | cut -d"%" -f1)
-if [ -z "$sdb1_used"]; then sdb1_used=-1; fi
+if [ -z "$sdb1_used" ]; then sdb1_used=-1; fi
 
 echo "pihealth,hostname=$hostname cpu_temp=$cpu_temp,gpu_temp=$gpu_temp,cpu_util=$cpu_util,mem_used=$mem_used,sdcard_used=$sdcard_used,pmic_temp=$pmic_temp,cpu_freq=$cpu_freq,cpu_volt=$cpu_volt,cpu_throttled=$cpu_throttled,sda1_used=$sda1_used,sdb1_used=$sdb1_used,sdcard_reads=$sdcard_reads,sdcard_writes=$sdcard_writes"

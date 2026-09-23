@@ -23,7 +23,9 @@ if [ ${#GRAFANA_TOKEN} -lt 40 ]; then
 
     # Create wlanpi service account
     echo "Creating Grafana service account wlanpi"
-    SA_RESPONSE=$(curl -s --insecure -X POST https://wlanpi:wlanpi@127.0.0.1:3000/app/grafana/api/serviceaccounts -H "Accept: application/json" -H "Content-Type: application/json" -d '{"name": "wlanpi", "role": "Admin", "isDisabled": false}' -w " StatusCode:%{http_code}")
+    # The response is not needed: if the account already exists this fails,
+    # and the lookup below finds the existing one by name.
+    curl -s --insecure -X POST https://wlanpi:wlanpi@127.0.0.1:3000/app/grafana/api/serviceaccounts -H "Accept: application/json" -H "Content-Type: application/json" -d '{"name": "wlanpi", "role": "Admin", "isDisabled": false}' > /dev/null
 
     # Look up the service account ID by name. It is not guaranteed to be 2.
     SA_ID=$(curl -s --insecure https://wlanpi:wlanpi@127.0.0.1:3000/app/grafana/api/serviceaccounts/search?perpage=100\&page=1 | jq -r '.serviceAccounts[] | select(.name == "wlanpi") | .id' | head -1)
