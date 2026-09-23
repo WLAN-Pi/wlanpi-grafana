@@ -7,7 +7,7 @@
 
 export DH_VIRTUALENV_INSTALL_ROOT=/opt
 export PYBUILD_NAME=wlanpi-grafana
-export PYBUILD_SYSTEM=distutils
+export PYBUILD_SYSTEM=pyproject
 
 PACKAGE=$(shell dh_listpackages)
 VERSION=$(shell parsechangelog | grep ^Version: | sed -re 's/[^0-9]+([^-]+).*/\1/')

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spectool-client-parser"
+version = "1.0.0"
+description = "wispy plugin for wlanpi-grafana"
+requires-python = ">=3.13"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+classifiers = [
+    "Natural Language :: English",
+    "Intended Audience :: System Administrators",
+    "Topic :: Utilities",
+]
+dynamic = ["dependencies"]
+
+[project.urls]
+Documentation = "https://docs.wlanpi.com"
+Source = "https://github.com/wlan-pi/wlanpi-grafana"
+
+[project.scripts]
+spectool-client-parser = "wispy.spectool_client_parser:main"
+
+[tool.setuptools]
+packages = ["wispy"]
+
+[tool.setuptools.dynamic]
+# Not requirements.txt: setuptools can't parse its --extra-index-url line.
+# The Debian build installs the pinned requirements.txt first (dh_virtualenv).
+dependencies = {file = ["requirements.in"]}
+
+[tool.ruff]
+target-version = "py313"
