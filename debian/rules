@@ -66,5 +66,3 @@ override_dh_virtualenv:
 		--upgrade-pip-to=23.2.1 \
 		--preinstall="setuptools==68.1.2" \
 		--preinstall="wheel==0.41.2"
-		--preinstall="mock" \
-		--extras="all,systemd,test"
