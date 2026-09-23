@@ -1,3 +1,18 @@
+wlanpi-grafana (1.1.1) unstable; urgency=medium
+
+  * Fix the sda1/sdb1 fallback tests in pihealth.sh. A missing space
+    before ] made bash log "[: missing `]'" every 60 seconds when a USB
+    disk was attached.
+  * Guard the spectool-client-parser entry point with __main__.
+    Importing the module used to run the parser. Output is unchanged.
+  * Build the wispy plugin from pyproject.toml with pybuild's pyproject
+    plugin and raise Pre-Depends and X-Python3-Version to
+    python3 (>= 3.13), the trixie interpreter the venv uses.
+  * Drop dh_virtualenv options that never took effect (a missing line
+    continuation in debian/rules). The built venv is unchanged.
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Wed, 23 Sep 2026 19:46:30 -0400
+
 wlanpi-grafana (1.1.0) unstable; urgency=medium
 
   * First working release on Debian trixie with Grafana 13.
