@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-import os
 import re
 import sys
 import time
 
-
 # Created by Bryan Ward
+
 
 def main():
     counter = 0
@@ -18,18 +17,16 @@ def main():
         if line is not None:
             if counter >= 4:
                 data = list(map(int, line.split(":")[1].split(" ")[1:-1]))
-                x = list(range(len(data)))
-                y = data
 
                 # Build Influx Line Protocol
-                l = "wispy2"
-                # l = l + ",lf=" + str(lf) + ",hf=" + str(hf) + " "
-                l = l + " "
-                l = l + str(freqs[0]) + "=" + str(data[0])
+                out = "wispy2"
+                # out = out + ",lf=" + str(lf) + ",hf=" + str(hf) + " "
+                out = out + " "
+                out = out + str(freqs[0]) + "=" + str(data[0])
                 for i in range(numsamples - 1):
-                    l = l + "," + str(freqs[i + 1]) + "=" + str(data[i + 1])
-                l = l + " " + str(time.time_ns())
-                print(l)
+                    out = out + "," + str(freqs[i + 1]) + "=" + str(data[i + 1])
+                out = out + " " + str(time.time_ns())
+                print(out)
 
             else:
                 counter = counter + 1
@@ -42,4 +39,7 @@ def main():
                         for i in range(numsamples):
                             freqs.append(round(i * (hf - lf) / numsamples + lf, 4))
 
-sys.exit(main())
+
+# The spectool-client-parser entry point imports this module and calls main().
+if __name__ == "__main__":
+    sys.exit(main())

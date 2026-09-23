@@ -5,6 +5,7 @@ Maintainer: Jiri Brejcha <jirka@jiribrejcha.net>
 Uploaders: Jiri Brejcha <jirka@jiribrejcha.net>
 Build-Depends: debhelper (>= 11),
                dh-python,
+               pybuild-plugin-pyproject,
                dh-virtualenv (>= 1.1),
                python3,
                python3-dev, 
@@ -16,12 +17,12 @@ Build-Depends: debhelper (>= 11),
                libnl-genl-3-200,
                libpcap0.8
 Standards-Version: 4.6.0
-X-Python3-Version: >= 3.9
+X-Python3-Version: >= 3.13
 Homepage: https://github.com/WLAN-Pi/wlanpi-grafana
 
 Package: wlanpi-grafana
 Architecture: any
 Multi-Arch: foreign
-Pre-Depends: dpkg (>= 1.16.1), python3 (>=3.7), ${misc:Pre-Depends}
+Pre-Depends: dpkg (>= 1.16.1), python3 (>= 3.13), ${misc:Pre-Depends}
 Depends: wlanpi-common (>= 1.0.89), grafana (>= 13.0.0), grafana (<< 14.0.0), wlanpi-webui, spectools, jc, sysstat, ${misc:Depends}
 Description: Grafana dashboards for WLAN Pi
