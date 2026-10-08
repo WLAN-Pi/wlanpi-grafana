@@ -53,12 +53,34 @@ jobs:
       - name: Run actionlint
         uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
 
+  tox:
+    name: tox
+    runs-on: 'ubuntu-24.04-arm'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install tox
+        run: python -m pip install --upgrade "tox>=4"
+
+      # tox.ini skips missing interpreters, which would pass the job without
+      # running pytest if the runner lacked Python 3.13.
+      - name: Run pytest, ruff and the format check
+        run: tox --skip-missing-interpreters false -e py313,lint,formatcheck
+
   slack-workflow-status:
     if: ${{ always() && github.repository_owner == 'WLAN-Pi' && ! github.event.pull_request.head.repo.fork }}
     name: Post Workflow Status to Slack
     needs:
       - shellcheck
       - actionlint
+      - tox
     runs-on: 'ubuntu-24.04'
     steps:
       - name: Slack Workflow Notification
