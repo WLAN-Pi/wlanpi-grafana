@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+
+# postinst replaced /etc/grafana/grafana.ini with a link to our conffile, which
+# purge deletes. grafana's postinst fails on the dangling link ("cp: not
+# writing through dangling symlink"), so put back the config it moved aside.
+if [ "$1" = "purge" ]; then
+    conf="$DPKG_ROOT/etc/grafana/grafana.ini"
+    if [ -L "$conf" ] && [ "$(readlink "$conf")" = /etc/wlanpi-grafana/grafana.ini ]; then
+        rm "$conf"
+        backup=
+        # Backups are grafana.ini.<epoch seconds>; the glob sorts the newest last.
+        for f in "$conf".[0-9]*; do
+            if [ -f "$f" ]; then
+                backup=$f
+            fi
+        done
+        if [ -n "$backup" ]; then
+            mv "$backup" "$conf"
+        fi
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0

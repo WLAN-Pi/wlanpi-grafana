@@ -1,3 +1,13 @@
+wlanpi-grafana (1.1.2) unstable; urgency=medium
+
+  * Restore Grafana's own grafana.ini when wlanpi-grafana is purged.
+    Purging left /etc/grafana/grafana.ini linked to the deleted
+    /etc/wlanpi-grafana/grafana.ini, and installing or reconfiguring
+    grafana afterwards failed with "cp: not writing through dangling
+    symlink".
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Thu, 08 Oct 2026 17:22:40 -0400
+
 wlanpi-grafana (1.1.1) unstable; urgency=medium
 
   * Fix the sda1/sdb1 fallback tests in pihealth.sh. A missing space
