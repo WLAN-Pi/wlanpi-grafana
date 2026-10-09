@@ -58,11 +58,11 @@ override_dh_dwz:
 override_dh_installexamples:
 	dh_installexamples -A -X__pycache__
 
+# pip only builds the venv. Nothing on the device runs it, and a shipped copy
+# goes stale with no manifest left for Dependabot to watch.
 override_dh_virtualenv:
 	dh_virtualenv \
 		--install-suffix "wlanpi-grafana" \
 		--builtin-venv \
-		--python ${SNAKE} \
-		--upgrade-pip-to=23.2.1 \
-		--preinstall="setuptools==68.1.2" \
-		--preinstall="wheel==0.41.2"
+		--python ${SNAKE}
+	PYTHONDONTWRITEBYTECODE=1 $(DH_VENV_DIR)/bin/python -m pip uninstall --yes pip
