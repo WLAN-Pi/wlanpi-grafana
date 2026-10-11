@@ -43,8 +43,11 @@ def run_scanner(tmp_path, captures="", captures_once_scanning="", on_scan="", po
     stubs = {
         opt / "check-token.sh": "",
         opt / "to-grafana.sh": "cat > /dev/null",
+        # Exits a moment after SIGTERM, like a scanner finishing a netlink call.
         opt / "scanner" / "nlscan-lp": (
-            f'echo "nlscan-lp $*" >> "{log}"; {on_scan}\ntouch "{scanning}"; exec sleep 30'
+            f'echo "nlscan-lp $*" >> "{log}"; {on_scan}\n'
+            f'trap \'command sleep 0.2; echo "nlscan-lp exited" >> "{log}"; exit\' TERM\n'
+            f'touch "{scanning}"; while :; do command sleep 0.05; done'
         ),
     }
     for path, body in stubs.items():
@@ -54,13 +57,14 @@ def run_scanner(tmp_path, captures="", captures_once_scanning="", on_scan="", po
     # sleep (2 s) waits until nlscan-lp is running so the calls keep their order.
     defs = (
         f'ip() {{ echo "ip $*" >> "{log}"; }}; '
+        f'iw() {{ echo "iw $*" >> "{log}"; }}; '
         f"ss() {{ printf '%s' '{captures}'; "
         f"[ -e \"{scanning}\" ] && printf '%s' '{captures_once_scanning}'; return 0; }}; "
         "sleep() { "
         f'  if [ "$1" = 2 ]; then until [ -e "{scanning}" ]; do command sleep 0.02; done; fi; '
         f"  _sleeps=$((_sleeps + 1)); [ $_sleeps -lt {polls} ] || kill -TERM 0; "
         "}; "
-        "export -f ip ss sleep; "
+        "export -f ip iw ss sleep; "
     )
     result = subprocess.run(
         [
@@ -91,6 +95,8 @@ def test_brings_a_down_interface_up_and_restores_it(tmp_path, driver):
     assert calls == [
         "ip link set wlan0 up",
         "nlscan-lp wlan0",
+        "nlscan-lp exited",
+        "iw dev wlan0 scan abort",
         "ip link set wlan0 down",
     ]
 
@@ -101,7 +107,7 @@ def test_leaves_an_up_interface_up(tmp_path):
     result, calls = run_scanner(tmp_path)
 
     assert result.returncode == 0
-    assert calls == ["nlscan-lp wlan0"]
+    assert calls == ["nlscan-lp wlan0", "nlscan-lp exited", "iw dev wlan0 scan abort"]
 
 
 def test_leaves_a_replaced_interface_up(tmp_path):
@@ -113,7 +119,12 @@ def test_leaves_a_replaced_interface_up(tmp_path):
     result, calls = run_scanner(tmp_path, on_scan=recreate)
 
     assert result.returncode == 0
-    assert calls == ["ip link set wlan0 up", "nlscan-lp wlan0"]
+    assert calls == [
+        "ip link set wlan0 up",
+        "nlscan-lp wlan0",
+        "nlscan-lp exited",
+        "iw dev wlan0 scan abort",
+    ]
 
 
 def test_pauses_monitors_on_the_same_intel_radio(tmp_path):
@@ -130,6 +141,8 @@ def test_pauses_monitors_on_the_same_intel_radio(tmp_path):
         "ip link set wlanpi0 down",
         "ip link set wlan0 up",
         "nlscan-lp wlan0",
+        "nlscan-lp exited",
+        "iw dev wlan0 scan abort",
         "ip link set wlan0 down",
         "ip link set wlanpi0 up",
     ]
@@ -161,7 +174,10 @@ def test_stops_scanning_when_a_capture_starts_on_a_paused_monitor(tmp_path):
     assert calls == [
         "ip link set wlanpi0 down",
         "ip link set wlan0 up",
+        # The scan has ended before the monitor comes back up.
         "nlscan-lp wlan0",
+        "nlscan-lp exited",
+        "iw dev wlan0 scan abort",
         "ip link set wlanpi0 up",
         "ip link set wlan0 down",
     ]

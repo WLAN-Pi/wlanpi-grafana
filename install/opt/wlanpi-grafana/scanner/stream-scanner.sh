@@ -6,6 +6,7 @@ dir=$(dirname "$(readlink -f "$0")")
 net=${SYS_CLASS_NET:-/sys/class/net}
 raised=
 paused=()
+scan=
 
 is_up() { (($(cat "$net/$1/flags") & 1)); }
 
@@ -20,12 +21,23 @@ captured() {
     return 1
 }
 
+# Wait for nlscan-lp to exit and abort the scan it left in the kernel, so no
+# monitor comes back up mid-scan.
+stop_scan() {
+    [ -n "$scan" ] || return 0
+    kill "$scan" 2> /dev/null
+    wait "$scan"
+    iw dev "$iface" scan abort 2> /dev/null
+    scan=
+}
+
 resume_monitors() {
     for mon in "${paused[@]}"; do ip link set "$mon" up; done
     paused=()
 }
 
 restore() {
+    stop_scan
     # Leave the interface alone if it was replaced meanwhile, as activating
     # a wlanpi-core network profile does.
     if [ -n "$raised" ] && [ "$(cat "$net/$iface/ifindex" 2>/dev/null)" = "$raised" ]; then
@@ -76,11 +88,11 @@ while true; do
         while sleep 2 && kill -0 "$scan" 2> /dev/null; do
             if [ ${#paused[@]} -gt 0 ] && captured "${paused[@]}"; then
                 echo "Stopping the scan on $iface: a capture started on ${paused[*]}"
-                kill "$scan"
+                stop_scan
                 resume_monitors
             fi
         done
-        wait "$scan"
+        stop_scan
     fi
     # nlscan-lp scans until it fails. Without a pause a down interface fails
     # hundreds of times a second.
