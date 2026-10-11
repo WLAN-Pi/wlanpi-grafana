@@ -7,6 +7,11 @@ if ! systemctl is-active --quiet grafana-server; then
     until systemctl is-active --quiet grafana-server; do sleep 2; done
 fi
 
+# Streams that waited for Grafana get here together. One at a time, or each
+# deletes the token another one just saved.
+exec 9< "$0"
+flock 9
+
 # Check if Service Account and API token have been created. If not, create them.
 set -a; source /etc/environment; set +a
 

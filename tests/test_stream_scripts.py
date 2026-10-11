@@ -3,18 +3,21 @@ import subprocess
 from pathlib import Path
 
 SCRIPTS = Path(__file__).resolve().parent.parent / "install" / "opt" / "wlanpi-grafana"
+TOKEN_FROM_GRAFANA = "glsa_" + "t" * 41
 
 
-def run(script, stubs, stdin="", env=None):
-    """Run a script with commands replaced by exported bash functions.
+def start(script, stubs, environment, stdin=None):
+    """Start a script with commands replaced by exported bash functions.
 
-    Functions win over PATH, and the scripts source /etc/environment, which can
-    reset PATH on the host running the tests.
+    Functions win over PATH and builtins, so `source` reads `environment`
+    instead of the host's /etc/environment.
     """
+    stubs = {"source": f'builtin source "{environment}"', **stubs}
     defs = "".join(
         f"{name}() {{ {body}; }}; export -f {name}; " for name, body in stubs.items()
     )
-    return subprocess.run(
+    env = {k: v for k, v in os.environ.items() if k != "GRAFANA_TOKEN"}
+    return subprocess.Popen(
         [
             "bash",
             "-c",
@@ -22,24 +25,33 @@ def run(script, stubs, stdin="", env=None):
             str(SCRIPTS / script),
             "nlscan",
         ],
-        input=stdin,
-        env={**os.environ, **(env or {})},
-        capture_output=True,
+        stdin=subprocess.PIPE if stdin is not None else subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env,
         text=True,
-        check=False,
-        timeout=30,
     )
 
 
+def run(script, stubs, environment, stdin=None):
+    proc = start(script, stubs, environment, stdin)
+    out, err = proc.communicate(stdin, timeout=30)
+    return proc.returncode, out, err
+
+
 def test_to_grafana_logs_each_failure_once(tmp_path):
+    environment = tmp_path / "environment"
+    environment.write_text("")
     codes = tmp_path / "codes"
     codes.write_text("000\n000\n200\n401\n401\n204\n000\n")
     curl = f'head -1 "{codes}"; sed -i 1d "{codes}"'
 
-    result = run("to-grafana.sh", {"curl": curl}, stdin="a\nb\nc\nd\ne\nf\ng\n")
+    rc, _, err = run(
+        "to-grafana.sh", {"curl": curl}, environment, stdin="a\nb\nc\nd\ne\nf\ng\n"
+    )
 
-    assert result.returncode == 0
-    assert result.stderr.splitlines() == [
+    assert rc == 0
+    assert err.splitlines() == [
         "Grafana Live push to nlscan failed: HTTP 000",
         "Grafana Live push to nlscan failed: HTTP 401",
         "Grafana Live push to nlscan failed: HTTP 000",
@@ -47,19 +59,53 @@ def test_to_grafana_logs_each_failure_once(tmp_path):
 
 
 def test_check_token_waits_for_grafana(tmp_path):
+    environment = tmp_path / "environment"
+    environment.write_text(f"GRAFANA_TOKEN={TOKEN_FROM_GRAFANA}\n")
     calls = tmp_path / "calls"
     # grafana-server is inactive for the first two checks.
-    systemctl = f'echo >> "{calls}"; [ "$(wc -l < "{calls}")" -gt 2 ]'
+    systemctl = f'echo "$*" >> "{calls}"; [ "$(wc -l < "{calls}")" -gt 2 ]'
 
-    result = run(
-        "check-token.sh",
-        {"systemctl": systemctl, "sleep": ":"},
-        env={"GRAFANA_TOKEN": "x" * 40},
+    rc, out, _ = run(
+        "check-token.sh", {"systemctl": systemctl, "sleep": ":"}, environment
     )
 
-    assert result.returncode == 0
-    assert result.stdout.splitlines() == [
+    assert rc == 0
+    assert out.splitlines() == [
         "Waiting for the Grafana service to start",
         "Existing Grafana API token found in environmental variable",
     ]
-    assert len(calls.read_text().splitlines()) == 3
+    assert calls.read_text().splitlines() == ["is-active --quiet grafana-server"] * 3
+
+
+def test_check_token_creates_one_token_for_streams_starting_together(tmp_path):
+    environment = tmp_path / "environment"
+    environment.write_text("")
+    # Just enough of Grafana's API for check-token.sh. Creating a token is slow,
+    # so without the lock both streams create one and the first is deleted.
+    curl = (
+        'case "$*" in '
+        "*--write-out*) echo 200 ;; "
+        "*/tokens*POST*|*POST*/tokens*) command sleep 0.5; "
+        f"echo {TOKEN_FROM_GRAFANA}$BASHPID ;; "
+        "esac"
+    )
+    jq = 'case "$*" in *serviceAccounts*) echo 2 ;; *.key*) cat ;; esac'
+    stubs = {
+        "systemctl": "return 0",
+        "curl": curl,
+        "jq": jq,
+        "sudo": '"$@"',
+        "tee": f'cat >> "{environment}"',
+    }
+
+    procs = [start("check-token.sh", stubs, environment) for _ in range(2)]
+    outs = [proc.communicate(timeout=30)[0] for proc in procs]
+
+    assert [proc.returncode for proc in procs] == [0, 0]
+    assert environment.read_text().count("GRAFANA_TOKEN=") == 1
+    assert sorted(
+        "Successfully generated Grafana API token" in out for out in outs
+    ) == [
+        False,
+        True,
+    ]
