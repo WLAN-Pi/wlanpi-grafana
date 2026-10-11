@@ -72,7 +72,7 @@
         "mode": "markdown"
       },
       "pluginVersion": "10.1.4",
-      "title": "⚠️ To start receiving data connect Wi-Spy to USB port > open Grafana menu > Data Streams > MetaGeek Wi-Spy DBx > press Play button",
+      "title": "⚠️ To start receiving data, connect the Wi-Spy to a USB port, open Apps > Grafana > Data streams in the WebUI and press Start on MetaGeek Wi-Spy DBx 2.4 GHz or 5 GHz",
       "type": "text"
     },
     {

@@ -72,7 +72,7 @@
         "mode": "markdown"
       },
       "pluginVersion": "10.1.4",
-      "title": "⚠️ To start receiving data connect WiPry to USB port > open Grafana menu > Data Streams > Oscium WiPry Clarity > press Play button",
+      "title": "⚠️ To start receiving data, connect the WiPry to a USB port, open Apps > Grafana > Data streams in the WebUI and press Start on Oscium WiPry Clarity 2.4 GHz, 5 GHz or 6 GHz",
       "type": "text"
     },
     {

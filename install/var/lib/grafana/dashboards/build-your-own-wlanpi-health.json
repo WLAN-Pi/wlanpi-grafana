@@ -66,7 +66,7 @@
         "mode": "markdown"
       },
       "pluginVersion": "10.1.5",
-      "title": "⚠️ To start receiving data open the top Grafana menu > Data Streams > WLAN Pi Health > press Play button",
+      "title": "⚠️ To start receiving data, open Apps > Grafana > Data streams in the WebUI and press Start on WLAN Pi health",
       "type": "text"
     },
     {
