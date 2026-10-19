@@ -46,8 +46,9 @@ while true; do
         fi
     fi
     if [ -n "$token" ]; then
+        # The header goes through a pipe: any local user can read curl's argv.
         response=$(curl -s --cacert "$core_cert" --max-time 30 -G --data-urlencode "iface=$iface" \
-            -H "Authorization: Bearer $token" -w '\n%{http_code}' "$scan_url")
+            -H @<(printf 'Authorization: Bearer %s\n' "$token") -w '\n%{http_code}' "$scan_url")
         code=${response##*$'\n'}
         body=${response%$'\n'*}
         case $code in

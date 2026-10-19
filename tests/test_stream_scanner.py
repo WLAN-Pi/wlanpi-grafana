@@ -1,14 +1,13 @@
 import json
 import os
-import re
 import shutil
 import subprocess
 from pathlib import Path
+from types import SimpleNamespace
 
-SCANNER = (
-    Path(__file__).resolve().parent.parent
-    / "install/opt/wlanpi-grafana/scanner/stream-scanner.sh"
-)
+ROOT = Path(__file__).resolve().parent.parent
+SCANNER = ROOT / "install/opt/wlanpi-grafana/scanner/stream-scanner.sh"
+DASHBOARD = ROOT / "install/var/lib/grafana/dashboards/scanner.json"
 NOW = "1792440000"
 
 
@@ -37,8 +36,8 @@ def run_scanner(tmp_path, responses, tokens=("tok1",), cycles=None):
     by default), with wlanpi-core's scan API answering `responses` in order
     and getjwt handing out `tokens` in order (None: getjwt fails).
 
-    Returns stdout, the channel and lines pushed to Grafana, and the curl
-    arguments of each scan.
+    Returns stdout, the channel and lines pushed to Grafana, and per scan
+    the curl arguments and the headers curl read from files, and each sleep.
     """
     opt = tmp_path / "opt"
     (opt / "scanner").mkdir(parents=True)
@@ -49,7 +48,10 @@ def run_scanner(tmp_path, responses, tokens=("tok1",), cycles=None):
     for i, token in enumerate(tokens, start=1):
         if token:
             (tmp_path / f"{i}.token").write_text(token)
-    pushed, calls = tmp_path / "pushed", tmp_path / "calls"
+    pushed, calls, headers = (
+        tmp_path / name for name in ("pushed", "calls", "headers")
+    )
+    sleeps = tmp_path / "sleep_args"
     stubs = {
         opt / "check-token.sh": "",
         opt / "to-grafana.sh": f'echo "$1" > "{tmp_path}/channel"; cat >> "{pushed}"',
@@ -61,14 +63,17 @@ def run_scanner(tmp_path, responses, tokens=("tok1",), cycles=None):
     # getjwt run in subshells, so they count their calls in files.
     defs = (
         'next() { n=$(($(cat "$1" 2>/dev/null) + 1)); echo $n > "$1"; echo $n; }; '
-        f'curl() {{ printf "%s\\n" "$*" >> "{calls}"; n=$(next "{tmp_path}/curls"); '
+        f'curl() {{ printf "%s\\n" "$*" >> "{calls}"; '
+        f'for a; do case $a in @*) cat "${{a#@}}" >> "{headers}" ;; esac; done; '
+        f'n=$(next "{tmp_path}/curls"); '
         f'cat "{tmp_path}/$n.body"; printf "\\n%s" "$(cat "{tmp_path}/$n.code")"; }}; '
         f'getjwt() {{ n=$(next "{tmp_path}/getjwts"); '
         f'[ -e "{tmp_path}/$n.token" ] || {{ echo "API Error: connection refused"; return 1; }}; '
         f'echo "export WLANPI_TOKEN=$(cat "{tmp_path}/$n.token")"; }}; '
         f"date() {{ echo {NOW}; }}; "
         # Exiting closes the pipe to to-grafana.sh, which then pushes the rest.
-        f'sleep() {{ [ "$(next "{tmp_path}/sleeps")" -lt {cycles or len(responses)} ] || exit 0; }}; '
+        f'sleep() {{ echo "$*" >> "{sleeps}"; '
+        f'[ "$(next "{tmp_path}/sleeps")" -lt {cycles or len(responses)} ] || exit 0; }}; '
         "export -f next curl getjwt date sleep; "
     )
     result = subprocess.run(
@@ -85,11 +90,17 @@ def run_scanner(tmp_path, responses, tokens=("tok1",), cycles=None):
         timeout=30,
     )
     channel = tmp_path / "channel"
-    return (
-        result.stdout.splitlines(),
-        channel.read_text().strip() if channel.exists() else None,
-        pushed.read_text().splitlines() if pushed.exists() else [],
-        calls.read_text().splitlines() if calls.exists() else [],
+
+    def lines(path):
+        return path.read_text().splitlines() if path.exists() else []
+
+    return SimpleNamespace(
+        out=result.stdout.splitlines(),
+        channel=channel.read_text().strip() if channel.exists() else None,
+        pushed=lines(pushed),
+        calls=lines(calls),
+        headers=lines(headers),
+        sleeps=lines(sleeps),
     )
 
 
@@ -110,15 +121,15 @@ def test_pushes_each_network_in_the_scanner_format(tmp_path):
         network("Café"),
     )
 
-    out, channel, pushed, calls = run_scanner(tmp_path, [response])
+    run = run_scanner(tmp_path, [response])
 
     def line(tags, rssi=-50):
         return f"scanner,ifname=wlan0,{tags} rssi={rssi} {NOW}000000000"
 
     tags = "bssid=001122334455,freq=2412,channel=1"
-    assert out == []
-    assert channel == "scanner"
-    assert pushed == [
+    assert run.out == []
+    assert run.channel == "scanner"
+    assert run.pushed == [
         line(
             r"bssid=9a2a6f42e479,freq=2462,channel=11,name=Office\ [9a2a6f42e479],ssid=Office",
             rssi=-38,
@@ -134,8 +145,6 @@ def test_pushes_each_network_in_the_scanner_format(tmp_path):
         line(rf"{tags},name=PoM-\x1a\x13\ [001122334455],ssid=PoM-\x1a\x13"),
         line(rf"{tags},name=Café\ [001122334455],ssid=Café"),
     ]
-    assert "--data-urlencode iface=wlan0" in calls[0]
-    assert "Authorization: Bearer tok1" in calls[0]
 
 
 def test_logs_each_failure_once(tmp_path):
@@ -150,9 +159,9 @@ def test_logs_each_failure_once(tmp_path):
         error(409, "SCAN_IN_PROGRESS"),
     ]
 
-    out, _, pushed, _ = run_scanner(tmp_path, responses)
+    run = run_scanner(tmp_path, responses)
 
-    assert out == [
+    assert run.out == [
         "Scan on wlan0 failed: HTTP 409 SCAN_IN_PROGRESS",
         "Scan on wlan0 failed: HTTP 409 MONITOR_IN_USE",
         "Scan on wlan0 failed: HTTP 422 NO_SCAN_ADAPTER",
@@ -161,28 +170,56 @@ def test_logs_each_failure_once(tmp_path):
         # A success in between: the same failure is news again.
         "Scan on wlan0 failed: HTTP 409 SCAN_IN_PROGRESS",
     ]
-    assert len(pushed) == 1
+    assert len(run.pushed) == 1
+    # wlanpi-core's scan guide asks for at least 15 s between scans.
+    assert run.sleeps == ["15"] * len(responses)
 
 
 def test_gets_a_new_core_token_when_core_rejects_one(tmp_path):
     responses = [scan(network("Office")), error(401, ""), scan(network("Office"))]
 
-    out, _, pushed, calls = run_scanner(tmp_path, responses, tokens=("tok1", "tok2"))
+    run = run_scanner(tmp_path, responses, tokens=("tok1", "tok2"))
 
-    assert out == ["wlanpi-core rejected its token; getting a new one"]
-    assert [re.search(r"Bearer (\w+)", call)[1] for call in calls] == [
-        "tok1",
-        "tok1",
-        "tok2",
+    assert run.out == ["wlanpi-core rejected its token; getting a new one"]
+    assert run.headers == [
+        f"Authorization: Bearer {t}" for t in ("tok1", "tok1", "tok2")
     ]
-    assert len(pushed) == 2
+    assert len(run.pushed) == 2
 
 
 def test_waits_for_core_to_issue_a_token(tmp_path):
-    out, _, pushed, calls = run_scanner(
+    run = run_scanner(
         tmp_path, [scan(network("Office"))], tokens=(None, None, "tok1"), cycles=3
     )
 
-    assert out == ["Could not get a wlanpi-core token: API Error: connection refused"]
-    assert len(calls) == 1
-    assert len(pushed) == 1
+    assert run.out == [
+        "Could not get a wlanpi-core token: API Error: connection refused"
+    ]
+    assert len(run.calls) == 1
+    assert len(run.pushed) == 1
+
+
+def test_asks_core_for_one_interface_without_the_token_in_argv(tmp_path):
+    run = run_scanner(tmp_path, [scan(network("Office"))])
+
+    (args,) = run.calls
+    assert args.startswith(
+        "-s --cacert /etc/nginx/ssl/self-signed-wlanpi.cert --max-time 30"
+    )
+    assert "-G --data-urlencode iface=wlan0" in args
+    assert args.endswith("https://127.0.0.1:31415/api/v1/utils/wlan/scan")
+    # Any local user can read a process's argv.
+    assert "tok1" not in args
+    assert run.headers == ["Authorization: Bearer tok1"]
+
+
+def test_dashboard_reads_the_channel_the_scanner_pushes_to(tmp_path):
+    run = run_scanner(tmp_path, [scan(network("Office"))])
+    measurement = run.pushed[0].split(",")[0]
+
+    panels = json.loads(DASHBOARD.read_text())["panels"]
+    channels = {
+        t["channel"] for p in panels for t in p.get("targets", []) if "channel" in t
+    }
+
+    assert channels == {f"stream/{run.channel}/{measurement}"}
