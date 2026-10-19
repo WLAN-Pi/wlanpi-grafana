@@ -23,7 +23,7 @@ def start(script, stubs, environment, stdin=None):
             "-c",
             f'{defs}exec bash "$0" "${{@}}"',
             str(SCRIPTS / script),
-            "nlscan",
+            "scanner",
         ],
         stdin=subprocess.PIPE if stdin is not None else subprocess.DEVNULL,
         stdout=subprocess.PIPE,
@@ -52,9 +52,9 @@ def test_to_grafana_logs_each_failure_once(tmp_path):
 
     assert rc == 0
     assert err.splitlines() == [
-        "Grafana Live push to nlscan failed: HTTP 000",
-        "Grafana Live push to nlscan failed: HTTP 401",
-        "Grafana Live push to nlscan failed: HTTP 000",
+        "Grafana Live push to scanner failed: HTTP 000",
+        "Grafana Live push to scanner failed: HTTP 401",
+        "Grafana Live push to scanner failed: HTTP 000",
     ]
 
 

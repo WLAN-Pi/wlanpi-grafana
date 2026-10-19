@@ -1,100 +1,70 @@
 #!/bin/bash
-# stream-scanner.sh <interface>: scan <interface> with nlscan-lp and stream the results to Grafana Live.
+# stream-scanner.sh <interface>: scan <interface> through wlanpi-core every 15 s and stream the results to Grafana Live.
 
 iface=$1
 dir=$(dirname "$(readlink -f "$0")")
-net=${SYS_CLASS_NET:-/sys/class/net}
-raised=
-paused=()
-scan=
+scan_url=https://127.0.0.1:31415/api/v1/utils/wlan/scan
+core_cert=/etc/nginx/ssl/self-signed-wlanpi.cert
 
-is_up() { (($(cat "$net/$1/flags") & 1)); }
+# One line protocol line per network, in the format the Scanner dashboard reads.
+# Grafana splits a stream's labels on "," and "=", and line protocol can't
+# carry control characters or end a tag value in "\", so those are written as
+# \xNN, the way iw writes SSID bytes it can't print.
+lines='
+def hex: "0123456789abcdef" as $h | (. / 16 | floor) as $hi
+    | "\\x" + $h[$hi:$hi + 1] + $h[. % 16:. % 16 + 1];
+def tag: explode
+    | map(if . < 32 or . == 127 or . == 44 or . == 61 then hex
+          elif . == 32 then "\\ "
+          else [.] | implode end)
+    | join("") | sub("\\\\$"; "\\x5c");
+.networks[]
+| (.bssid | gsub(":"; "")) as $bssid
+| "scanner,ifname=\($ifname),bssid=\($bssid),freq=\(.freq)"
+    + (if .primaryChannel then ",channel=\(.primaryChannel)" else "" end)
+    + (if .ssid | test("^(\\\\x00)*$") then ",name=[\($bssid)]"
+       else ",name=\("\(.ssid) [\($bssid)]" | tag),ssid=\(.ssid | tag)" end)
+    + " rssi=\(.signal) \($ts)"
+'
 
-# True if a capture (a packet socket) is bound to any of the given interfaces,
-# or if ss can't tell.
-captured() {
-    local socks mon
-    socks=$(ss -0 -a -n -H) || return 0
-    for mon; do
-        awk '{ sub(/.*:/, "", $5); print $5 }' <<< "$socks" | grep -qx "$mon" && return 0
-    done
-    return 1
-}
-
-# Wait for nlscan-lp to exit and abort the scan it left in the kernel, so no
-# monitor comes back up mid-scan.
-stop_scan() {
-    [ -n "$scan" ] || return 0
-    kill "$scan" 2> /dev/null
-    wait "$scan"
-    iw dev "$iface" scan abort 2> /dev/null
-    scan=
-}
-
-resume_monitors() {
-    for mon in "${paused[@]}"; do ip link set "$mon" up; done
-    paused=()
-}
-
-restore() {
-    stop_scan
-    # Leave the interface alone if it was replaced meanwhile, as activating
-    # a wlanpi-core network profile does.
-    if [ -n "$raised" ] && [ "$(cat "$net/$iface/ifindex" 2>/dev/null)" = "$raised" ]; then
-        ip link set "$iface" down
-    fi
-    resume_monitors
-}
-trap restore EXIT
-trap 'exit 0' TERM INT
-
-# Intel iwlwifi firmware (BE200) crashes when an interface scans while a
-# monitor on the same radio is up (WLAN-Pi/wlanpi-core#314), so keep those
-# monitors down while the scanner runs, unless a capture is using one.
-pause_monitors() {
-    local phy dev mon mons=()
-    [ "$(basename "$(readlink -f "$net/$iface/device/driver")")" = iwlwifi ] || return 0
-    phy=$(readlink -f "$net/$iface/phy80211")
-    for dev in "$net"/*; do
-        mon=${dev##*/}
-        if [ "$(readlink -f "$dev/phy80211")" = "$phy" ] && [ "$(cat "$dev/type")" = 803 ] && is_up "$mon"; then
-            mons+=("$mon")
-        fi
-    done
-    if [ ${#mons[@]} -gt 0 ] && captured "${mons[@]}"; then
-        echo "Not scanning on $iface: a capture is using ${mons[*]} on the same Intel radio"
-        return 1
-    fi
-    for mon in "${mons[@]}"; do
-        ip link set "$mon" down && paused+=("$mon")
-    done
+last=
+fail() {
+    [ "$1" = "$last" ] || echo "$1"
+    last=$1
 }
 
 "$dir/../check-token.sh"
+exec 3> >("$dir/../to-grafana.sh" scanner)
 
+token=
 while true; do
-    if [ ! -e "$net/$iface" ]; then
-        echo "$iface not found"
-    elif pause_monitors; then
-        # wlanpi-core leaves a managed interface down once it adds its monitor.
-        if ! is_up "$iface"; then
-            ip link set "$iface" up && raised=$(cat "$net/$iface/ifindex")
+    if [ -z "$token" ]; then
+        if out=$(getjwt wlanpi-grafana --export); then
+            token=${out#export WLANPI_TOKEN=}
+        else
+            fail "Could not get a wlanpi-core token: $out"
         fi
-        "$dir/nlscan-lp" "$iface" > >("$dir/../to-grafana.sh" nlscan) &
-        scan=$!
-        # A capture that starts on a paused monitor ends the scan and gets
-        # the monitor back. ponytail: a tool that raises the monitor itself
-        # overlaps the scan for up to one poll; core's own scan risks 3-5 s.
-        while sleep 2 && kill -0 "$scan" 2> /dev/null; do
-            if [ ${#paused[@]} -gt 0 ] && captured "${paused[@]}"; then
-                echo "Stopping the scan on $iface: a capture started on ${paused[*]}"
-                stop_scan
-                resume_monitors
-            fi
-        done
-        stop_scan
     fi
-    # nlscan-lp scans until it fails. Without a pause a down interface fails
-    # hundreds of times a second.
-    sleep 5
+    if [ -n "$token" ]; then
+        response=$(curl -s --cacert "$core_cert" --max-time 30 -G --data-urlencode "iface=$iface" \
+            -H "Authorization: Bearer $token" -w '\n%{http_code}' "$scan_url")
+        code=${response##*$'\n'}
+        body=${response%$'\n'*}
+        case $code in
+            200)
+                jq -r --arg ifname "$iface" --arg ts "$(date +%s)000000000" "$lines" <<< "$body" >&3
+                last=
+                ;;
+            401)
+                token=
+                fail "wlanpi-core rejected its token; getting a new one"
+                ;;
+            *)
+                error=$(jq -r '.error // empty' <<< "$body" 2> /dev/null)
+                fail "Scan on $iface failed: HTTP $code${error:+ $error}"
+                ;;
+        esac
+    fi
+    # wlanpi-core's scan is a one-off snapshot; its docs ask for at least 15 s between scans.
+    sleep 15
 done
