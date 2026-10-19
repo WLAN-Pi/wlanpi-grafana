@@ -109,3 +109,56 @@ def test_check_token_creates_one_token_for_streams_starting_together(tmp_path):
         False,
         True,
     ]
+
+
+def internet_sample(tmp_path, ping, dig, speedtest):
+    environment = tmp_path / "environment"
+    environment.write_text("")
+    stubs = {
+        "ip": "echo default via 192.0.2.1 dev eth0",
+        "hostname": "echo wlanpi-test",
+        "ping": ping,
+        "dig": dig,
+        "librespeed-cli": speedtest,
+    }
+    rc, out, _ = run("internet/internet.sh", stubs, environment)
+    assert rc == 0
+    return dict(field.split("=") for field in out.split()[1].split(","))
+
+
+def test_internet_pings_google_over_ipv4(tmp_path):
+    # IPv6 is broken: only an IPv4 ping gets a reply.
+    ping = (
+        'case "$*" in *-4*|*192.0.2.1*) '
+        "echo rtt min/avg/max/mdev = 1/14.8/1/0 ms ;; *) return 1 ;; esac"
+    )
+
+    sample = internet_sample(
+        tmp_path,
+        ping,
+        dig="echo ';; Query time: 8 msec'",
+        speedtest='echo \'[{"ping": 19.4, "download": 862.8, "upload": 586.5}]\'',
+    )
+
+    assert sample["rtt_google"] == "14.8"
+    assert sample["rtt_gateway"] == "14.8"
+    assert sample["download"] == "862.8"
+
+
+def test_internet_reports_failed_measurements_as_minus_one(tmp_path):
+    sample = internet_sample(
+        tmp_path, ping="return 1", dig="return 1", speedtest="echo '[]'"
+    )
+
+    assert sample == {
+        "rtt_speedtest": "-1",
+        "rtt_google": "-1",
+        "rtt_gateway": "-1",
+        "download": "-1",
+        "upload": "-1",
+        "dns1_res_time_google": "-1",
+        "dns1_res_time_apple": "-1",
+        "dns1_res_time_aws": "-1",
+        "internet_status": "0",
+        "speedtest_tool": "0",
+    }

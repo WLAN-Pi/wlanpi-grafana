@@ -49,7 +49,9 @@ dns1_res_time_apple=$(dig +time=2 +tries=1 @"$primary_dns_server" NS apple.com |
 if [ -z "$dns1_res_time_apple" ]; then dns1_res_time_apple="-1"; fi
 dns1_res_time_aws=$(dig +time=2 +tries=1 @"$primary_dns_server" NS amazonaws.com | grep "Query time:" | cut -d ' ' -f4)
 if [ -z "$dns1_res_time_aws" ]; then dns1_res_time_aws="-1"; fi
-rtt_google=$(ping -c1 google.com | grep "rtt" | cut -d"/" -f5)
+# IPv4 like the gateway check: with a broken IPv6 route, ping picks the AAAA
+# record and fails.
+rtt_google=$(ping -4 -c1 google.com | grep "rtt" | cut -d"/" -f5)
 rtt_gateway=$(ping -c1 "$default_gateway" | grep "rtt" | cut -d"/" -f5)
 
 # Use LibreSpeed by default to measure throughput
@@ -73,6 +75,13 @@ else
     # Convert to Mbps
     upload=$((upload * 8 / 1000000))
 fi
+
+# Grafana Live rejects the whole sample if any field is empty or null.
+for field in rtt_speedtest rtt_google rtt_gateway download upload; do
+    if [ -z "${!field}" ] || [ "${!field}" = null ]; then
+        printf -v "$field" %s -1
+    fi
+done
 
 # Generate final output
 cat <<-____HERE
