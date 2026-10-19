@@ -14,6 +14,8 @@ sdcard_used=$(df | grep "/dev/root" | awk '{print $5}' | cut -d"%" -f1)
 iostat_output=$(iostat -d 1 2 -o JSON | grep "mmcblk0" | tail -n 1)
 sdcard_reads=$(jq -r '.["kB_read/s"]'  <<< "$iostat_output")
 sdcard_writes=$(jq -r '.["kB_wrtn/s"]'  <<< "$iostat_output")
+if [ -z "$sdcard_reads" ] || [ "$sdcard_reads" = "null" ]; then sdcard_reads=-1; fi
+if [ -z "$sdcard_writes" ] || [ "$sdcard_writes" = "null" ]; then sdcard_writes=-1; fi
 
 #Return -1 if doesn't exist
 sda1_used=$(df | grep "/dev/sda1" | awk '{print $5}' | cut -d"%" -f1)

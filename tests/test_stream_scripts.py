@@ -2,6 +2,13 @@ import os
 import subprocess
 from pathlib import Path
 
+
+BASH = (
+    r"C:\Program Files\Git\bin\bash.exe"
+    if Path(r"C:\Program Files\Git\bin\bash.exe").exists()
+    else "bash"
+)
+
 SCRIPTS = Path(__file__).resolve().parent.parent / "install" / "opt" / "wlanpi-grafana"
 TOKEN_FROM_GRAFANA = "glsa_" + "t" * 41
 
@@ -19,7 +26,7 @@ def start(script, stubs, environment, stdin=None):
     env = {k: v for k, v in os.environ.items() if k != "GRAFANA_TOKEN"}
     return subprocess.Popen(
         [
-            "bash",
+            BASH,
             "-c",
             f'{defs}exec bash "$0" "${{@}}"',
             str(SCRIPTS / script),
@@ -109,3 +116,22 @@ def test_check_token_creates_one_token_for_streams_starting_together(tmp_path):
         False,
         True,
     ]
+
+
+def test_pihealth_reports_missing_mmcblk0_as_unknown(tmp_path):
+    environment = tmp_path / "environment"
+    environment.write_text("")
+    stubs = {
+        "cat": "case \"$1\" in /sys/*) echo 1000000 ;; *) command cat \"$@\" ;; esac",
+        "vcgencmd": "case \"$1\" in measure_temp) echo \"temp=50.0'C\" ;; measure_volts) echo \"volt=1.2V\" ;; get_throttled) echo \"throttled=0x0\" ;; esac",
+        "mpstat": 'echo \'{"sysstat":{"hosts":[{"statistics":[{"cpu-load":[{"idle":90}]}]}]}}\'',
+        "free": "echo 'Mem: 100 50 50'",
+        "df": "echo '/dev/root 100 50 50 50% /'",
+        "iostat": "echo '{\"sysstat\":{}}'",
+        "jq": "case \"$*\" in *kB_read*) echo null ;; *kB_wrtn*) echo null ;; *) command jq \"$@\" ;; esac",
+    }
+
+    rc, out, err = run("health/pihealth.sh", stubs, environment)
+
+    assert rc == 0, err
+    assert "sdcard_reads=-1,sdcard_writes=-1" in out
