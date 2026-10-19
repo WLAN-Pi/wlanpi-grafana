@@ -1,3 +1,29 @@
+wlanpi-grafana (1.1.4) unstable; urgency=medium
+
+  * Point the dashboard banners at Apps > Grafana > Data streams in the
+    WebUI. They told users to press Play in a Grafana Data Streams menu
+    that WebUI 1.18.0 removed. The banners now read as a hint for when a
+    dashboard shows no data, since they show even while data flows.
+  * Data streams started before Grafana now wait for it and then create
+    their API token. They used to run without a token, Grafana rejected
+    every push and the dashboards stayed empty. A failed push is now
+    logged to the stream's journal each time the HTTP status changes.
+  * Fix the Scanner dashboard getting no data. The scanner brings up the
+    Wi-Fi interface wlanpi-core leaves down, takes it down again on
+    stop, and waits 5 seconds between attempts instead of restarting
+    nlscan-lp hundreds of times a second. On Intel radios it keeps
+    monitor interfaces on the same radio down while it scans, which
+    avoids a BE200 firmware crash, and does not scan while a capture
+    uses one.
+  * Stop shipping pip, setuptools and wheel in /opt/wlanpi-grafana.
+    Nothing on the device used them, and the pinned versions had known
+    vulnerabilities.
+  * Run the postinst setup on configure only. Every python3 upgrade ran
+    it through a dpkg trigger, re-adding the apt repositories,
+    reinstalling the plugins and restarting Grafana.
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Mon, 19 Oct 2026 14:22:42 -0400
+
 wlanpi-grafana (1.1.3) unstable; urgency=medium
 
   * Stop shipping requests, python-dotenv and their dependencies
