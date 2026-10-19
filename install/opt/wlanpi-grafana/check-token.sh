@@ -1,10 +1,16 @@
 #!/bin/bash
 
-# Check if Grafana service is running
+# The WebUI can start a data stream before Grafana. Wait, or the stream runs
+# without a token and every push is rejected.
 if ! systemctl is-active --quiet grafana-server; then
-    echo "Error: Grafana service is not running"
-    exit 1
+    echo "Waiting for the Grafana service to start"
+    until systemctl is-active --quiet grafana-server; do sleep 2; done
 fi
+
+# Streams that waited for Grafana get here together. One at a time, or each
+# deletes the token another one just saved.
+exec 9< "$0"
+flock 9
 
 # Check if Service Account and API token have been created. If not, create them.
 set -a; source /etc/environment; set +a
