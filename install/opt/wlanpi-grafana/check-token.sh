@@ -13,7 +13,7 @@ exec 9< "$0"
 flock 9
 
 # Check if Service Account and API token have been created. If not, create them.
-set -a; source /etc/environment; set +a
+source /etc/wlanpi-grafana/token 2>/dev/null
 
 if [ ${#GRAFANA_TOKEN} -lt 40 ]; then
     echo "No Grafana API token for service account found. Attempting to create one now."
@@ -51,16 +51,15 @@ if [ ${#GRAFANA_TOKEN} -lt 40 ]; then
     NEW_GRAFANA_TOKEN=$(curl -s --insecure -X POST https://wlanpi:wlanpi@127.0.0.1:3000/app/grafana/api/serviceaccounts/"$SA_ID"/tokens -H "Accept: application/json" -H "Content-Type: application/json" -d '{"name": "wlanpi", "role": "Admin"}' | jq -r '.key')
 
     if [ ${#NEW_GRAFANA_TOKEN} -gt 40 ]; then
-        # Save API token to env variable
         echo "Successfully generated Grafana API token"
-        echo "Saving Grafana API token to environmental variable"
-        echo "GRAFANA_TOKEN=$NEW_GRAFANA_TOKEN" | sudo tee -a /etc/environment > /dev/null
-        set -a; source /etc/environment; set +a
+        echo "Saving Grafana API token to /etc/wlanpi-grafana/token"
+        # Root-only: the token has the Admin role.
+        (umask 077; echo "GRAFANA_TOKEN=$NEW_GRAFANA_TOKEN" | sudo tee /etc/wlanpi-grafana/token > /dev/null)
     else
         echo "Error: Failed to create Grafana API token"
         exit 1
     fi
 else
-    echo "Existing Grafana API token found in environmental variable"
+    echo "Existing Grafana API token found"
     #echo "GRAFANA_TOKEN=$GRAFANA_TOKEN"
 fi

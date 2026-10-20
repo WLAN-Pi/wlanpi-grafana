@@ -10,7 +10,7 @@ def start(script, stubs, environment, stdin=None):
     """Start a script with commands replaced by exported bash functions.
 
     Functions win over PATH and builtins, so `source` reads `environment`
-    instead of the host's /etc/environment.
+    instead of the host's token file.
     """
     stubs = {"source": f'builtin source "{environment}"', **stubs}
     defs = "".join(
@@ -58,6 +58,24 @@ def test_to_grafana_logs_each_failure_once(tmp_path):
     ]
 
 
+def test_to_grafana_keeps_the_token_out_of_curl_argv(tmp_path):
+    environment = tmp_path / "environment"
+    environment.write_text(f"GRAFANA_TOKEN={TOKEN_FROM_GRAFANA}\n")
+    args, headers = tmp_path / "args", tmp_path / "headers"
+    curl = (
+        f'echo "$*" >> "{args}"; '
+        f'for a; do case $a in @*) cat "${{a#@}}" >> "{headers}" ;; esac; done; '
+        "echo 200"
+    )
+
+    rc, _, _ = run("to-grafana.sh", {"curl": curl}, environment, stdin="a\n")
+
+    assert rc == 0
+    # Any local user can read a process's argv.
+    assert TOKEN_FROM_GRAFANA not in args.read_text()
+    assert headers.read_text() == f"Authorization: Bearer {TOKEN_FROM_GRAFANA}\n"
+
+
 def test_check_token_waits_for_grafana(tmp_path):
     environment = tmp_path / "environment"
     environment.write_text(f"GRAFANA_TOKEN={TOKEN_FROM_GRAFANA}\n")
@@ -72,7 +90,7 @@ def test_check_token_waits_for_grafana(tmp_path):
     assert rc == 0
     assert out.splitlines() == [
         "Waiting for the Grafana service to start",
-        "Existing Grafana API token found in environmental variable",
+        "Existing Grafana API token found",
     ]
     assert calls.read_text().splitlines() == ["is-active --quiet grafana-server"] * 3
 
@@ -90,12 +108,13 @@ def test_check_token_creates_one_token_for_streams_starting_together(tmp_path):
         "esac"
     )
     jq = 'case "$*" in *serviceAccounts*) echo 2 ;; *.key*) cat ;; esac'
+    saved = tmp_path / "saved"
     stubs = {
         "systemctl": "return 0",
         "curl": curl,
         "jq": jq,
         "sudo": '"$@"',
-        "tee": f'cat >> "{environment}"',
+        "tee": f'echo "$(umask) $*" >> "{saved}"; cat >> "{environment}"',
     }
 
     procs = [start("check-token.sh", stubs, environment) for _ in range(2)]
@@ -103,6 +122,8 @@ def test_check_token_creates_one_token_for_streams_starting_together(tmp_path):
 
     assert [proc.returncode for proc in procs] == [0, 0]
     assert environment.read_text().count("GRAFANA_TOKEN=") == 1
+    # The token has the Admin role: only root may read it.
+    assert saved.read_text() == "0077 /etc/wlanpi-grafana/token\n"
     assert sorted(
         "Successfully generated Grafana API token" in out for out in outs
     ) == [

@@ -27,7 +27,11 @@ def run_postinst(tmp_path, *args):
         stub.chmod(0o755)
     result = subprocess.run(
         ["bash", str(POSTINST), *args],
-        env={**os.environ, "PATH": f"{bin_dir}:{os.environ['PATH']}"},
+        env={
+            **os.environ,
+            "PATH": f"{bin_dir}:{os.environ['PATH']}",
+            "DPKG_ROOT": str(tmp_path / "root"),
+        },
         capture_output=True,
         text=True,
         check=False,
@@ -60,3 +64,34 @@ def test_configure_installs_plugins(tmp_path):
     assert "Installing Grafana plugins" in result.stdout
     assert "grafana cli plugins install ae3e-plotly-panel" in calls
     assert "grafana cli plugins install innius-video-panel" in calls
+
+
+def old_environment(tmp_path):
+    environment = tmp_path / "root" / "etc" / "environment"
+    environment.parent.mkdir(parents=True)
+    environment.write_text("LANG=C\nGRAFANA_TOKEN=revoked\nGRAFANA_TOKEN=current\n")
+    return environment
+
+
+@pytest.mark.skipif(grafana_running(), reason="would restart the host's Grafana")
+def test_configure_moves_the_token_out_of_etc_environment(tmp_path):
+    environment = old_environment(tmp_path)
+    token = tmp_path / "root" / "etc" / "wlanpi-grafana" / "token"
+    token.parent.mkdir()
+
+    run_postinst(tmp_path, "configure", "1.1.4")
+
+    assert token.read_text() == "GRAFANA_TOKEN=current\n"
+    assert token.stat().st_mode & 0o777 == 0o600
+    assert environment.read_text() == "LANG=C\n"
+
+
+@pytest.mark.skipif(grafana_running(), reason="would restart the host's Grafana")
+def test_configure_keeps_the_token_it_could_not_move(tmp_path):
+    environment = old_environment(tmp_path)
+    before = environment.read_text()
+
+    # /etc/wlanpi-grafana is missing, so the token file can't be written.
+    run_postinst(tmp_path, "configure", "1.1.4")
+
+    assert environment.read_text() == before
