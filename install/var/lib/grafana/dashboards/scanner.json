@@ -159,7 +159,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "channel": "stream/nlscan/nlscan",
+          "channel": "stream/scanner/scanner",
           "datasource": {
             "type": "datasource",
             "uid": "grafana"
@@ -355,7 +355,7 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "channel": "stream/nlscan/nlscan",
+          "channel": "stream/scanner/scanner",
           "datasource": {
             "type": "datasource",
             "uid": "grafana"
