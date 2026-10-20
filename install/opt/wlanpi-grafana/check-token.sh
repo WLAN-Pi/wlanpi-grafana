@@ -15,17 +15,28 @@ flock 9
 # Check if Service Account and API token have been created. If not, create them.
 source /etc/wlanpi-grafana/token 2>/dev/null
 
+while true; do
+    # If we get 502 or cannot connect, wait for Grafana to come up
+    HTTP_CODE=$(curl --insecure --max-time 5 --write-out "%{http_code}" --silent --output /dev/null https://127.0.0.1:3000/app/grafana/)
+    if [ "$HTTP_CODE" = "502" ] || [ "$HTTP_CODE" = "000" ]; then
+        sleep 1
+    else
+        break
+    fi
+done
+
+# A reset Grafana database or a deleted token leaves a saved token that every
+# push gets 401 for. Only a 401 means the token is gone, not a slow Grafana.
+if [ ${#GRAFANA_TOKEN} -ge 40 ]; then
+    HTTP_CODE=$(curl --insecure --max-time 5 --write-out "%{http_code}" --silent --output /dev/null -H @<(printf 'Authorization: Bearer %s\n' "$GRAFANA_TOKEN") https://127.0.0.1:3000/app/grafana/api/user)
+    if [ "$HTTP_CODE" = "401" ]; then
+        echo "Grafana rejected the saved API token"
+        GRAFANA_TOKEN=
+    fi
+fi
+
 if [ ${#GRAFANA_TOKEN} -lt 40 ]; then
     echo "No Grafana API token for service account found. Attempting to create one now."
-    while true; do
-        # If we get 502 or cannot connect, wait for Grafana to come up
-        HTTP_CODE=$(curl --insecure --max-time 5 --write-out "%{http_code}" --silent --output /dev/null https://127.0.0.1:3000/app/grafana/)
-        if [ "$HTTP_CODE" = "502" ] || [ "$HTTP_CODE" = "000" ]; then
-            sleep 1
-        else
-            break
-        fi
-    done
 
     # Create wlanpi service account
     echo "Creating Grafana service account wlanpi"
