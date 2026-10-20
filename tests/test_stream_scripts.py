@@ -177,6 +177,46 @@ def test_check_token_keeps_the_token_when_grafana_fails_otherwise(tmp_path):
         (tmp_path / "headers").unlink()
 
 
+def pihealth_sample(tmp_path, iostat, vcgencmd):
+    environment = tmp_path / "environment"
+    environment.write_text("")
+    stubs = {
+        "hostname": "echo wlanpi-test",
+        "cat": 'case "$1" in *thermal*) echo 59000 ;; *cpufreq*) echo 1500000 ;; esac',
+        "vcgencmd": vcgencmd,
+        "mpstat": """echo '{"sysstat":{"hosts":[{"statistics":[{"cpu-load":[{"idle":97.4}]}]}]}}'""",
+        "free": "printf 'h\\nMem: 100 44\\n'",
+        "df": "echo /dev/sda2 100 20 80 20% /",
+        "iostat": iostat,
+    }
+    rc, out, _ = run("health/pihealth.sh", stubs, environment)
+    assert rc == 0
+    return dict(field.split("=") for field in out.split()[1].split(","))
+
+
+def test_pihealth_reports_missing_values_as_minus_one(tmp_path):
+    # Booted from USB: no mmcblk0, no /dev/root, and vcgencmd prints nothing.
+    sample = pihealth_sample(
+        tmp_path, iostat='echo \'{"disk_device": "sda"}\'', vcgencmd="return 1"
+    )
+
+    assert sample == {
+        "cpu_temp": "59",
+        "gpu_temp": "-1",
+        "cpu_util": "2.5999999999999943",
+        "mem_used": "44",
+        "sdcard_used": "-1",
+        "pmic_temp": "-1",
+        "cpu_freq": "1500000",
+        "cpu_volt": "-1",
+        "cpu_throttled": "-1",
+        "sda1_used": "-1",
+        "sdb1_used": "-1",
+        "sdcard_reads": "-1",
+        "sdcard_writes": "-1",
+    }
+
+
 def internet_sample(tmp_path, ping, dig, speedtest):
     environment = tmp_path / "environment"
     environment.write_text("")
