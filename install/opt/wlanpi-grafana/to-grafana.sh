@@ -11,4 +11,8 @@ while IFS= read -r line; do
         echo "Grafana Live push to $1 failed: HTTP $code" >&2
     fi
     last=$code
+    # Another stream's check-token.sh may have replaced a rejected token.
+    if [ "$code" = 401 ]; then
+        source /etc/wlanpi-grafana/token
+    fi
 done
