@@ -5,6 +5,7 @@ set -e
 # purge deletes. grafana's postinst fails on the dangling link ("cp: not
 # writing through dangling symlink"), so put back the config it moved aside.
 if [ "$1" = "purge" ]; then
+    rm -f "$DPKG_ROOT/etc/wlanpi-grafana/token"
     conf="$DPKG_ROOT/etc/grafana/grafana.ini"
     if [ -L "$conf" ] && [ "$(readlink "$conf")" = /etc/wlanpi-grafana/grafana.ini ]; then
         rm "$conf"
