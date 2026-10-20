@@ -84,7 +84,9 @@ def test_check_token_waits_for_grafana(tmp_path):
     systemctl = f'echo "$*" >> "{calls}"; [ "$(wc -l < "{calls}")" -gt 2 ]'
 
     rc, out, _ = run(
-        "check-token.sh", {"systemctl": systemctl, "sleep": ":"}, environment
+        "check-token.sh",
+        {"systemctl": systemctl, "sleep": ":", "curl": "echo 200"},
+        environment,
     )
 
     assert rc == 0
@@ -130,6 +132,89 @@ def test_check_token_creates_one_token_for_streams_starting_together(tmp_path):
         False,
         True,
     ]
+
+
+def check_token_against_grafana(tmp_path, user_code):
+    environment = tmp_path / "environment"
+    environment.write_text(f"GRAFANA_TOKEN={TOKEN_FROM_GRAFANA}\n")
+    headers = tmp_path / "headers"
+    curl = (
+        'case "$*" in '
+        f'*/api/user*) for a; do case $a in @*) cat "${{a#@}}" >> "{headers}" ;; esac; done; '
+        f"echo {user_code} ;; "
+        "*--write-out*) echo 200 ;; "
+        "*/tokens*POST*|*POST*/tokens*) echo glsa_new_token_from_grafana_0123456789abcdef ;; "
+        "esac"
+    )
+    jq = 'case "$*" in *serviceAccounts*) echo 2 ;; *.key*) cat ;; esac'
+    stubs = {
+        "systemctl": "return 0",
+        "curl": curl,
+        "jq": jq,
+        "sudo": '"$@"',
+        "tee": f'cat > "{environment}"',
+    }
+    rc, out, _ = run("check-token.sh", stubs, environment)
+    assert rc == 0
+    assert headers.read_text() == f"Authorization: Bearer {TOKEN_FROM_GRAFANA}\n"
+    return out, environment.read_text()
+
+
+def test_check_token_replaces_a_token_grafana_rejects(tmp_path):
+    out, saved = check_token_against_grafana(tmp_path, 401)
+
+    assert "Grafana rejected the saved API token" in out
+    assert saved == "GRAFANA_TOKEN=glsa_new_token_from_grafana_0123456789abcdef\n"
+
+
+def test_check_token_keeps_the_token_when_grafana_fails_otherwise(tmp_path):
+    # A Grafana that is still starting must not cost a valid token.
+    for code in (200, 500, "000"):
+        out, saved = check_token_against_grafana(tmp_path, code)
+
+        assert out.splitlines() == ["Existing Grafana API token found"]
+        assert saved == f"GRAFANA_TOKEN={TOKEN_FROM_GRAFANA}\n"
+        (tmp_path / "headers").unlink()
+
+
+def pihealth_sample(tmp_path, iostat, vcgencmd):
+    environment = tmp_path / "environment"
+    environment.write_text("")
+    stubs = {
+        "hostname": "echo wlanpi-test",
+        "cat": 'case "$1" in *thermal*) echo 59000 ;; *cpufreq*) echo 1500000 ;; esac',
+        "vcgencmd": vcgencmd,
+        "mpstat": """echo '{"sysstat":{"hosts":[{"statistics":[{"cpu-load":[{"idle":97.4}]}]}]}}'""",
+        "free": "printf 'h\\nMem: 100 44\\n'",
+        "df": "echo /dev/sda2 100 20 80 20% /",
+        "iostat": iostat,
+    }
+    rc, out, _ = run("health/pihealth.sh", stubs, environment)
+    assert rc == 0
+    return dict(field.split("=") for field in out.split()[1].split(","))
+
+
+def test_pihealth_reports_missing_values_as_minus_one(tmp_path):
+    # Booted from USB: no mmcblk0, no /dev/root, and vcgencmd prints nothing.
+    sample = pihealth_sample(
+        tmp_path, iostat='echo \'{"disk_device": "sda"}\'', vcgencmd="return 1"
+    )
+
+    assert sample == {
+        "cpu_temp": "59",
+        "gpu_temp": "-1",
+        "cpu_util": "2.5999999999999943",
+        "mem_used": "44",
+        "sdcard_used": "-1",
+        "pmic_temp": "-1",
+        "cpu_freq": "1500000",
+        "cpu_volt": "-1",
+        "cpu_throttled": "-1",
+        "sda1_used": "-1",
+        "sdb1_used": "-1",
+        "sdcard_reads": "-1",
+        "sdcard_writes": "-1",
+    }
 
 
 def internet_sample(
