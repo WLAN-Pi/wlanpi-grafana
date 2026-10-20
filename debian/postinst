@@ -3,9 +3,11 @@
 # Older releases kept the stream token in /etc/environment, which pam_env loads
 # into every login session. Move it before the debhelper section below restarts
 # the streams; the last line is the one they used.
-if [ "$1" = "configure" ] && grep -q '^GRAFANA_TOKEN=' /etc/environment 2>/dev/null; then
-    (umask 077; grep '^GRAFANA_TOKEN=' /etc/environment | tail -1 > /etc/wlanpi-grafana/token)
-    sed -i '/^GRAFANA_TOKEN=/d' /etc/environment
+environment="$DPKG_ROOT/etc/environment"
+if [ "$1" = "configure" ] && grep -q '^GRAFANA_TOKEN=' "$environment" 2>/dev/null; then
+    if (umask 077; grep '^GRAFANA_TOKEN=' "$environment" | tail -1 > "$DPKG_ROOT/etc/wlanpi-grafana/token"); then
+        sed -i '/^GRAFANA_TOKEN=/d' "$environment"
+    fi
 fi
 
 #DEBHELPER#
