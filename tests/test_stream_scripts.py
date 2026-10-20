@@ -76,6 +76,29 @@ def test_to_grafana_keeps_the_token_out_of_curl_argv(tmp_path):
     assert headers.read_text() == f"Authorization: Bearer {TOKEN_FROM_GRAFANA}\n"
 
 
+def test_to_grafana_picks_up_a_replaced_token(tmp_path):
+    environment = tmp_path / "environment"
+    environment.write_text("GRAFANA_TOKEN=old\n")
+    headers = tmp_path / "headers"
+    # Grafana rejects the old token; meanwhile another stream saves a new one.
+    curl = (
+        f'for a; do case $a in @*) h=$(cat "${{a#@}}") ;; esac; done; '
+        f'echo "$h" >> "{headers}"; '
+        'case "$h" in *new) echo 200 ;; '
+        f'*) echo GRAFANA_TOKEN=new > "{environment}"; echo 401 ;; esac'
+    )
+
+    rc, _, err = run("to-grafana.sh", {"curl": curl}, environment, stdin="a\nb\nc\n")
+
+    assert rc == 0
+    assert headers.read_text().splitlines() == [
+        "Authorization: Bearer old",
+        "Authorization: Bearer new",
+        "Authorization: Bearer new",
+    ]
+    assert err.splitlines() == ["Grafana Live push to scanner failed: HTTP 401"]
+
+
 def test_check_token_waits_for_grafana(tmp_path):
     environment = tmp_path / "environment"
     environment.write_text(f"GRAFANA_TOKEN={TOKEN_FROM_GRAFANA}\n")
