@@ -1,70 +1,80 @@
+import json
 import os
 import shutil
 import subprocess
 from pathlib import Path
+from types import SimpleNamespace
 
-import pytest
-
-SCANNER = (
-    Path(__file__).resolve().parent.parent
-    / "install/opt/wlanpi-grafana/scanner/stream-scanner.sh"
-)
-MANAGED, MONITOR = "1", "803"
+ROOT = Path(__file__).resolve().parent.parent
+SCANNER = ROOT / "install/opt/wlanpi-grafana/scanner/stream-scanner.sh"
+DASHBOARD = ROOT / "install/var/lib/grafana/dashboards/scanner.json"
+NOW = "1792440000"
 
 
-def fake_interface(net, name, phy, driver, kind, up, ifindex=3):
-    """Add /sys/class/net/<name> with the links and files the scanner reads."""
-    root = net.parent
-    (root / "phys" / phy).mkdir(parents=True, exist_ok=True)
-    (root / "drivers" / driver).mkdir(parents=True, exist_ok=True)
-    device = root / "devices" / phy
-    device.mkdir(parents=True, exist_ok=True)
-    if not (device / "driver").exists():
-        (device / "driver").symlink_to(root / "drivers" / driver)
-    iface = net / name
-    iface.mkdir(parents=True)
-    (iface / "phy80211").symlink_to(root / "phys" / phy)
-    (iface / "device").symlink_to(device)
-    (iface / "type").write_text(kind + "\n")
-    (iface / "flags").write_text("0x1003\n" if up else "0x1002\n")
-    (iface / "ifindex").write_text(f"{ifindex}\n")
+def network(ssid, bssid="00:11:22:33:44:55", signal=-50, freq=2412, channel=1):
+    return {
+        "ssid": ssid,
+        "bssid": bssid,
+        "signal": signal,
+        "freq": freq,
+        "primaryChannel": channel,
+    }
 
 
-def run_scanner(tmp_path, captures="", captures_once_scanning="", on_scan="", polls=1):
-    """Run stream-scanner.sh wlan0 until its `polls`-th sleep, then stop it
-    the way systemd does: SIGTERM to every process in the group.
+def scan(*networks):
+    return 200, json.dumps(
+        {"selectedAdapter": {"iface": "wlan0"}, "networks": networks}
+    )
 
-    Returns the result and the ip and nlscan-lp calls in order.
+
+def error(code, name):
+    return code, json.dumps({"error": name, "message": "..."})
+
+
+def run_scanner(tmp_path, responses, tokens=("tok1",), cycles=None):
+    """Run stream-scanner.sh wlan0 for `cycles` scan cycles (one per response
+    by default), with wlanpi-core's scan API answering `responses` in order
+    and getjwt handing out `tokens` in order (None: getjwt fails).
+
+    Returns stdout, the channel and lines pushed to Grafana, and per scan
+    the curl arguments and the headers curl read from files, and each sleep.
     """
     opt = tmp_path / "opt"
     (opt / "scanner").mkdir(parents=True)
     shutil.copy(SCANNER, opt / "scanner")
-    log, scanning = tmp_path / "log", tmp_path / "scanning"
+    for i, (code, body) in enumerate(responses, start=1):
+        (tmp_path / f"{i}.code").write_text(str(code))
+        (tmp_path / f"{i}.body").write_text(body)
+    for i, token in enumerate(tokens, start=1):
+        if token:
+            (tmp_path / f"{i}.token").write_text(token)
+    pushed, calls, headers = (
+        tmp_path / name for name in ("pushed", "calls", "headers")
+    )
+    sleeps = tmp_path / "sleep_args"
     stubs = {
         opt / "check-token.sh": "",
-        opt / "to-grafana.sh": "cat > /dev/null",
-        # Exits a moment after SIGTERM, like a scanner finishing a netlink call.
-        opt / "scanner" / "nlscan-lp": (
-            f'echo "nlscan-lp $*" >> "{log}"; {on_scan}\n'
-            f'trap \'command sleep 0.2; echo "nlscan-lp exited" >> "{log}"; exit\' TERM\n'
-            f'touch "{scanning}"; while :; do command sleep 0.05; done'
-        ),
+        opt / "to-grafana.sh": f'echo "$1" > "{tmp_path}/channel"; cat >> "{pushed}"',
     }
     for path, body in stubs.items():
         path.write_text(f"#!/bin/bash\n{body}\n")
         path.chmod(0o755)
-    # Functions win over PATH, so these replace the real commands. The poll
-    # sleep (2 s) waits until nlscan-lp is running so the calls keep their order.
+    # Functions win over PATH, so these replace the real commands. curl and
+    # getjwt run in subshells, so they count their calls in files.
     defs = (
-        f'ip() {{ echo "ip $*" >> "{log}"; }}; '
-        f'iw() {{ echo "iw $*" >> "{log}"; }}; '
-        f"ss() {{ printf '%s' '{captures}'; "
-        f"[ -e \"{scanning}\" ] && printf '%s' '{captures_once_scanning}'; return 0; }}; "
-        "sleep() { "
-        f'  if [ "$1" = 2 ]; then until [ -e "{scanning}" ]; do command sleep 0.02; done; fi; '
-        f"  _sleeps=$((_sleeps + 1)); [ $_sleeps -lt {polls} ] || kill -TERM 0; "
-        "}; "
-        "export -f ip iw ss sleep; "
+        'next() { n=$(($(cat "$1" 2>/dev/null) + 1)); echo $n > "$1"; echo $n; }; '
+        f'curl() {{ printf "%s\\n" "$*" >> "{calls}"; '
+        f'for a; do case $a in @*) cat "${{a#@}}" >> "{headers}" ;; esac; done; '
+        f'n=$(next "{tmp_path}/curls"); '
+        f'cat "{tmp_path}/$n.body"; printf "\\n%s" "$(cat "{tmp_path}/$n.code")"; }}; '
+        f'getjwt() {{ n=$(next "{tmp_path}/getjwts"); '
+        f'[ -e "{tmp_path}/$n.token" ] || {{ echo "API Error: connection refused"; return 1; }}; '
+        f'echo "export WLANPI_TOKEN=$(cat "{tmp_path}/$n.token")"; }}; '
+        f"date() {{ echo {NOW}; }}; "
+        # Exiting closes the pipe to to-grafana.sh, which then pushes the rest.
+        f'sleep() {{ echo "$*" >> "{sleeps}"; '
+        f'[ "$(next "{tmp_path}/sleeps")" -lt {cycles or len(responses)} ] || exit 0; }}; '
+        "export -f next curl getjwt date sleep; "
     )
     result = subprocess.run(
         [
@@ -73,121 +83,143 @@ def run_scanner(tmp_path, captures="", captures_once_scanning="", on_scan="", po
             defs + 'exec "$0" wlan0',
             str(opt / "scanner/stream-scanner.sh"),
         ],
-        env={**os.environ, "SYS_CLASS_NET": str(tmp_path / "net")},
+        env=os.environ,
         capture_output=True,
         text=True,
-        check=False,
+        check=True,
         timeout=30,
-        start_new_session=True,
     )
-    return result, log.read_text().splitlines() if log.exists() else []
+    channel = tmp_path / "channel"
 
+    def lines(path):
+        return path.read_text().splitlines() if path.exists() else []
 
-@pytest.mark.parametrize("driver", ["mt76x2u", "brcmfmac"])
-def test_brings_a_down_interface_up_and_restores_it(tmp_path, driver):
-    net = tmp_path / "net"
-    fake_interface(net, "wlan0", "phy0", driver, MANAGED, up=False)
-    fake_interface(net, "wlanpi0", "phy0", driver, MONITOR, up=True, ifindex=4)
-
-    result, calls = run_scanner(tmp_path)
-
-    assert result.returncode == 0
-    assert calls == [
-        "ip link set wlan0 up",
-        "nlscan-lp wlan0",
-        "nlscan-lp exited",
-        "iw dev wlan0 scan abort",
-        "ip link set wlan0 down",
-    ]
-
-
-def test_leaves_an_up_interface_up(tmp_path):
-    fake_interface(tmp_path / "net", "wlan0", "phy0", "mt76x2u", MANAGED, up=True)
-
-    result, calls = run_scanner(tmp_path)
-
-    assert result.returncode == 0
-    assert calls == ["nlscan-lp wlan0", "nlscan-lp exited", "iw dev wlan0 scan abort"]
-
-
-def test_leaves_a_replaced_interface_up(tmp_path):
-    net = tmp_path / "net"
-    fake_interface(net, "wlan0", "phy0", "mt76x2u", MANAGED, up=False)
-    # wlanpi-core recreates the interface when it activates a profile on it.
-    recreate = f'echo 9 > "{net}/wlan0/ifindex"'
-
-    result, calls = run_scanner(tmp_path, on_scan=recreate)
-
-    assert result.returncode == 0
-    assert calls == [
-        "ip link set wlan0 up",
-        "nlscan-lp wlan0",
-        "nlscan-lp exited",
-        "iw dev wlan0 scan abort",
-    ]
-
-
-def test_pauses_monitors_on_the_same_intel_radio(tmp_path):
-    net = tmp_path / "net"
-    fake_interface(net, "wlan0", "phy0", "iwlwifi", MANAGED, up=False)
-    fake_interface(net, "wlanpi0", "phy0", "iwlwifi", MONITOR, up=True, ifindex=4)
-    fake_interface(net, "wlan1", "phy1", "iwlwifi", MANAGED, up=False, ifindex=5)
-    fake_interface(net, "wlanpi1", "phy1", "iwlwifi", MONITOR, up=True, ifindex=6)
-
-    result, calls = run_scanner(tmp_path, captures="p_raw UNCONN 0 0 *:wlanpi1 *\n")
-
-    assert result.returncode == 0
-    assert calls == [
-        "ip link set wlanpi0 down",
-        "ip link set wlan0 up",
-        "nlscan-lp wlan0",
-        "nlscan-lp exited",
-        "iw dev wlan0 scan abort",
-        "ip link set wlan0 down",
-        "ip link set wlanpi0 up",
-    ]
-
-
-def test_does_not_scan_while_a_capture_uses_the_intel_monitor(tmp_path):
-    net = tmp_path / "net"
-    fake_interface(net, "wlan0", "phy0", "iwlwifi", MANAGED, up=False)
-    fake_interface(net, "wlanpi0", "phy0", "iwlwifi", MONITOR, up=True, ifindex=4)
-
-    result, calls = run_scanner(tmp_path, captures="p_raw UNCONN 0 0 *:wlanpi0 *\n")
-
-    assert result.returncode == 0
-    assert "a capture is using wlanpi0" in result.stdout
-    assert calls == []
-
-
-def test_stops_scanning_when_a_capture_starts_on_a_paused_monitor(tmp_path):
-    net = tmp_path / "net"
-    fake_interface(net, "wlan0", "phy0", "iwlwifi", MANAGED, up=False)
-    fake_interface(net, "wlanpi0", "phy0", "iwlwifi", MONITOR, up=True, ifindex=4)
-
-    result, calls = run_scanner(
-        tmp_path, captures_once_scanning="p_raw UNCONN 0 0 *:wlanpi0 *\n", polls=2
+    return SimpleNamespace(
+        out=result.stdout.splitlines(),
+        channel=channel.read_text().strip() if channel.exists() else None,
+        pushed=lines(pushed),
+        calls=lines(calls),
+        headers=lines(headers),
+        sleeps=lines(sleeps),
     )
 
-    assert result.returncode == 0
-    assert "a capture started on wlanpi0" in result.stdout
-    assert calls == [
-        "ip link set wlanpi0 down",
-        "ip link set wlan0 up",
-        # The scan has ended before the monitor comes back up.
-        "nlscan-lp wlan0",
-        "nlscan-lp exited",
-        "iw dev wlan0 scan abort",
-        "ip link set wlanpi0 up",
-        "ip link set wlan0 down",
+
+def test_pushes_each_network_in_the_scanner_format(tmp_path):
+    response = scan(
+        network("Office", bssid="9a:2a:6f:42:e4:79", signal=-38, freq=2462, channel=11),
+        # Hidden networks: an empty SSID, or NULs that wlanpi-core prints as \x00.
+        network("", bssid="94:2a:6f:42:e4:79"),
+        network(r"\x00\x00", bssid="94:2a:6f:42:e4:7a"),
+        network("Cafe Wifi", freq=5955, channel=None),
+        # Grafana splits labels on "," and "="; line protocol can't carry a tab
+        # or end a tag value in a backslash.
+        network("Bob,Guest=1"),
+        network("tab\tx"),
+        network("back\\"),
+        # wlanpi-core's own escapes and UTF-8 pass through.
+        network(r"PoM-\x1a\x13"),
+        network("Café"),
+    )
+
+    run = run_scanner(tmp_path, [response])
+
+    def line(tags, rssi=-50):
+        return f"scanner,ifname=wlan0,{tags} rssi={rssi} {NOW}000000000"
+
+    tags = "bssid=001122334455,freq=2412,channel=1"
+    assert run.out == []
+    assert run.channel == "scanner"
+    assert run.pushed == [
+        line(
+            r"bssid=9a2a6f42e479,freq=2462,channel=11,name=Office\ [9a2a6f42e479],ssid=Office",
+            rssi=-38,
+        ),
+        line("bssid=942a6f42e479,freq=2412,channel=1,name=[942a6f42e479]"),
+        line("bssid=942a6f42e47a,freq=2412,channel=1,name=[942a6f42e47a]"),
+        line(
+            r"bssid=001122334455,freq=5955,name=Cafe\ Wifi\ [001122334455],ssid=Cafe\ Wifi"
+        ),
+        line(rf"{tags},name=Bob\x2cGuest\x3d1\ [001122334455],ssid=Bob\x2cGuest\x3d1"),
+        line(rf"{tags},name=tab\x09x\ [001122334455],ssid=tab\x09x"),
+        line(rf"{tags},name=back\\ [001122334455],ssid=back\x5c"),
+        line(rf"{tags},name=PoM-\x1a\x13\ [001122334455],ssid=PoM-\x1a\x13"),
+        line(rf"{tags},name=Café\ [001122334455],ssid=Café"),
     ]
 
 
-def test_waits_for_a_missing_interface(tmp_path):
-    (tmp_path / "net").mkdir()
+def test_logs_each_failure_once(tmp_path):
+    responses = [
+        error(409, "SCAN_IN_PROGRESS"),
+        error(409, "SCAN_IN_PROGRESS"),
+        error(409, "MONITOR_IN_USE"),
+        error(422, "NO_SCAN_ADAPTER"),
+        ("000", ""),  # curl couldn't reach wlanpi-core
+        error(409, "SCAN_IN_PROGRESS"),
+        scan(network("Office")),
+        error(409, "SCAN_IN_PROGRESS"),
+    ]
 
-    result, calls = run_scanner(tmp_path)
+    run = run_scanner(tmp_path, responses)
 
-    assert result.returncode == 0
-    assert result.stdout.splitlines() == ["wlan0 not found"]
-    assert calls == []
+    assert run.out == [
+        "Scan on wlan0 failed: HTTP 409 SCAN_IN_PROGRESS",
+        "Scan on wlan0 failed: HTTP 409 MONITOR_IN_USE",
+        "Scan on wlan0 failed: HTTP 422 NO_SCAN_ADAPTER",
+        "Scan on wlan0 failed: HTTP 000",
+        "Scan on wlan0 failed: HTTP 409 SCAN_IN_PROGRESS",
+        # A success in between: the same failure is news again.
+        "Scan on wlan0 failed: HTTP 409 SCAN_IN_PROGRESS",
+    ]
+    assert len(run.pushed) == 1
+    # wlanpi-core's scan guide asks for at least 15 s between scans.
+    assert run.sleeps == ["15"] * len(responses)
+
+
+def test_gets_a_new_core_token_when_core_rejects_one(tmp_path):
+    responses = [scan(network("Office")), error(401, ""), scan(network("Office"))]
+
+    run = run_scanner(tmp_path, responses, tokens=("tok1", "tok2"))
+
+    assert run.out == ["wlanpi-core rejected its token; getting a new one"]
+    assert run.headers == [
+        f"Authorization: Bearer {t}" for t in ("tok1", "tok1", "tok2")
+    ]
+    assert len(run.pushed) == 2
+
+
+def test_waits_for_core_to_issue_a_token(tmp_path):
+    run = run_scanner(
+        tmp_path, [scan(network("Office"))], tokens=(None, None, "tok1"), cycles=3
+    )
+
+    assert run.out == [
+        "Could not get a wlanpi-core token: API Error: connection refused"
+    ]
+    assert len(run.calls) == 1
+    assert len(run.pushed) == 1
+
+
+def test_asks_core_for_one_interface_without_the_token_in_argv(tmp_path):
+    run = run_scanner(tmp_path, [scan(network("Office"))])
+
+    (args,) = run.calls
+    assert args.startswith(
+        "-s --cacert /etc/nginx/ssl/self-signed-wlanpi.cert --max-time 30"
+    )
+    assert "-G --data-urlencode iface=wlan0" in args
+    assert args.endswith("https://127.0.0.1:31415/api/v1/utils/wlan/scan")
+    # Any local user can read a process's argv.
+    assert "tok1" not in args
+    assert run.headers == ["Authorization: Bearer tok1"]
+
+
+def test_dashboard_reads_the_channel_the_scanner_pushes_to(tmp_path):
+    run = run_scanner(tmp_path, [scan(network("Office"))])
+    measurement = run.pushed[0].split(",")[0]
+
+    panels = json.loads(DASHBOARD.read_text())["panels"]
+    channels = {
+        t["channel"] for p in panels for t in p.get("targets", []) if "channel" in t
+    }
+
+    assert channels == {f"stream/{run.channel}/{measurement}"}
