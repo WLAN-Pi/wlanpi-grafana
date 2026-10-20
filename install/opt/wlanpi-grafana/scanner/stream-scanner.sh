@@ -34,7 +34,7 @@ fail() {
 }
 
 "$dir/../check-token.sh"
-exec 3> >("$dir/../to-grafana.sh" scanner)
+exec 3> >("$dir/../to-grafana.sh" scanner -z)
 
 token=
 while true; do
@@ -53,7 +53,8 @@ while true; do
         body=${response%$'\n'*}
         case $code in
             200)
-                jq -r --arg ifname "$iface" --arg ts "$(date +%s)000000000" "$lines" <<< "$body" >&3
+                out=$(jq -r --arg ifname "$iface" --arg ts "$(date +%s)000000000" "$lines" <<< "$body")
+                [ -z "$out" ] || printf '%s\0' "$out" >&3
                 last=
                 ;;
             401)

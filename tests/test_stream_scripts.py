@@ -6,7 +6,7 @@ SCRIPTS = Path(__file__).resolve().parent.parent / "install" / "opt" / "wlanpi-g
 TOKEN_FROM_GRAFANA = "glsa_" + "t" * 41
 
 
-def start(script, stubs, environment, stdin=None):
+def start(script, stubs, environment, stdin=None, args=()):
     """Start a script with commands replaced by exported bash functions.
 
     Functions win over PATH and builtins, so `source` reads `environment`
@@ -24,6 +24,7 @@ def start(script, stubs, environment, stdin=None):
             f'{defs}exec bash "$0" "${{@}}"',
             str(SCRIPTS / script),
             "scanner",
+            *args,
         ],
         stdin=subprocess.PIPE if stdin is not None else subprocess.DEVNULL,
         stdout=subprocess.PIPE,
@@ -33,8 +34,8 @@ def start(script, stubs, environment, stdin=None):
     )
 
 
-def run(script, stubs, environment, stdin=None):
-    proc = start(script, stubs, environment, stdin)
+def run(script, stubs, environment, stdin=None, args=()):
+    proc = start(script, stubs, environment, stdin, args)
     out, err = proc.communicate(stdin, timeout=30)
     return proc.returncode, out, err
 
@@ -74,6 +75,27 @@ def test_to_grafana_keeps_the_token_out_of_curl_argv(tmp_path):
     # Any local user can read a process's argv.
     assert TOKEN_FROM_GRAFANA not in args.read_text()
     assert headers.read_text() == f"Authorization: Bearer {TOKEN_FROM_GRAFANA}\n"
+
+
+def test_to_grafana_z_pushes_each_record_whole(tmp_path):
+    environment = tmp_path / "environment"
+    environment.write_text("")
+    bodies = tmp_path / "bodies"
+    curl = (
+        'while [ "$1" != -d ]; do shift; done; '
+        f'printf "%s\\0" "$2" >> "{bodies}"; echo 200'
+    )
+
+    rc, _, err = run(
+        "to-grafana.sh",
+        {"curl": curl},
+        environment,
+        stdin="a 1\nb 2\0c 3\0",
+        args=["-z"],
+    )
+
+    assert (rc, err) == (0, "")
+    assert bodies.read_text().split("\0")[:-1] == ["a 1\nb 2", "c 3"]
 
 
 def test_to_grafana_picks_up_a_replaced_token(tmp_path):
