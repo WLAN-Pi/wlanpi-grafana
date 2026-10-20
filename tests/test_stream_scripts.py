@@ -132,15 +132,29 @@ def test_check_token_creates_one_token_for_streams_starting_together(tmp_path):
     ]
 
 
-def internet_sample(tmp_path, ping, dig, speedtest):
+def internet_sample(
+    tmp_path,
+    ping,
+    dig,
+    speedtest,
+    ip="echo default via 192.0.2.1 dev eth0",
+    resolv="nameserver 192.0.2.53\n",
+    environment_text="",
+    ookla="return 1",
+):
     environment = tmp_path / "environment"
-    environment.write_text("")
+    environment.write_text(environment_text)
+    resolv_conf = tmp_path / "resolv.conf"
+    resolv_conf.write_text(resolv)
     stubs = {
-        "ip": "echo default via 192.0.2.1 dev eth0",
+        "ip": ip,
         "hostname": "echo wlanpi-test",
         "ping": ping,
         "dig": dig,
         "librespeed-cli": speedtest,
+        "sudo": ookla,
+        # Read the test's resolv.conf instead of the host's.
+        "awk": f'command awk "${{@/#\\/etc\\/resolv.conf/{resolv_conf}}}"',
     }
     rc, out, _ = run("internet/internet.sh", stubs, environment)
     assert rc == 0
@@ -183,3 +197,65 @@ def test_internet_reports_failed_measurements_as_minus_one(tmp_path):
         "internet_status": "0",
         "speedtest_tool": "0",
     }
+
+
+def test_internet_uses_an_ipv6_first_nameserver(tmp_path):
+    dig = 'case "$*" in *@2001:db8::53*) echo ";; Query time: 8 msec" ;; esac'
+
+    sample = internet_sample(
+        tmp_path,
+        ping="return 1",
+        dig=dig,
+        speedtest="echo '[]'",
+        resolv="# comment nameserver 192.0.2.9\nnameserver 2001:db8::53\nnameserver 192.0.2.53\n",
+    )
+
+    assert sample["dns1_res_time_google"] == "8"
+    assert sample["dns1_res_time_aws"] == "8"
+    assert sample["internet_status"] == "1"
+
+
+def test_internet_measures_an_ipv6_only_network(tmp_path):
+    ip = 'case "$*" in *-6*) echo default via fe80::1 dev eth0 proto ra metric 100 ;; esac'
+    ping = (
+        'case "$*" in *-4*) return 1 ;; *-6*|*fe80::1%eth0*) '
+        "echo rtt min/avg/max/mdev = 1/14.8/1/0 ms ;; *) return 1 ;; esac"
+    )
+
+    sample = internet_sample(
+        tmp_path,
+        ping=ping,
+        dig="echo ';; Query time: 8 msec'",
+        speedtest="echo '[]'",
+        ip=ip,
+    )
+
+    assert sample["rtt_gateway"] == "14.8"
+    assert sample["rtt_google"] == "14.8"
+    assert sample["internet_status"] == "1"
+
+
+def test_internet_reports_a_failed_ookla_test_as_minus_one(tmp_path):
+    def sample(ookla):
+        return internet_sample(
+            tmp_path,
+            ping="return 1",
+            dig="return 1",
+            speedtest="return 1",
+            environment_text="USE_SPEEDTEST_NET=1\n",
+            ookla=ookla,
+        )
+
+    ok = sample(
+        """echo '{"ping": {"latency": 8.9}, "download": {"bandwidth": 109643056}, "upload": {"bandwidth": 103091745}}'"""
+    )
+    failed = sample("return 1")
+    error = sample("""echo '{"type": "log", "level": "error"}'""")
+
+    assert (ok["download"], ok["upload"], ok["speedtest_tool"]) == ("877", "824", "1")
+    assert (failed["download"], failed["upload"], failed["rtt_speedtest"]) == (
+        "-1",
+        "-1",
+        "-1",
+    )
+    assert (error["download"], error["upload"]) == ("-1", "-1")

@@ -21,7 +21,11 @@ else
 fi
 
 internet_status=0
-default_gateway=$(ip route | grep "default" | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | head -n1)
+default_gateway=$(ip -4 route show default | awk '{print $3; exit}')
+# IPv6-only network. A link-local gateway needs its interface to be pinged.
+if [ -z "$default_gateway" ]; then
+    default_gateway=$(ip -6 route show default | awk '{print $3 ($3 ~ /^fe80:/ ? "%" $5 : ""); exit}')
+fi
 
 # No default gateway detected, WLAN Pi has no internet connection
 if [ -z "$default_gateway" ]; then
@@ -42,16 +46,15 @@ exit 1
 fi
 
 # Default gateway detected, continue
-primary_dns_server=$(grep -m1 "nameserver" /etc/resolv.conf | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
+primary_dns_server=$(awk '/^nameserver/{print $2; exit}' /etc/resolv.conf)
 dns1_res_time_google=$(dig +time=2 +tries=1 @"$primary_dns_server" NS google.com | grep "Query time:" | cut -d ' ' -f4)
 if [ -z "$dns1_res_time_google" ]; then dns1_res_time_google="-1"; else internet_status=1; fi
 dns1_res_time_apple=$(dig +time=2 +tries=1 @"$primary_dns_server" NS apple.com | grep "Query time:" | cut -d ' ' -f4)
 if [ -z "$dns1_res_time_apple" ]; then dns1_res_time_apple="-1"; fi
 dns1_res_time_aws=$(dig +time=2 +tries=1 @"$primary_dns_server" NS amazonaws.com | grep "Query time:" | cut -d ' ' -f4)
 if [ -z "$dns1_res_time_aws" ]; then dns1_res_time_aws="-1"; fi
-# IPv4 like the gateway check: with a broken IPv6 route, ping picks the AAAA
-# record and fails.
-rtt_google=$(ping -4 -c1 google.com | grep "rtt" | cut -d"/" -f5)
+# IPv4 first: with a broken IPv6 route, ping picks the AAAA record and fails.
+rtt_google=$( (ping -4 -c1 google.com || ping -6 -c1 google.com) | grep "rtt" | cut -d"/" -f5)
 rtt_gateway=$(ping -c1 "$default_gateway" | grep "rtt" | cut -d"/" -f5)
 
 # Use LibreSpeed by default to measure throughput
@@ -69,11 +72,14 @@ else
     # {"type":"result","timestamp":"2023-10-16T15:51:29Z","ping":{"jitter":0.824,"latency":8.928,"low":7.549,"high":9.718},"download":{"bandwidth":109643056,"bytes":996186976,"elapsed":9209,"latency":{"iqm":9.719,"low":7.923,"high":230.024,"jitter":3.306}},"upload":{"bandwidth":103091745,"bytes":1065890503,"elapsed":10503,"latency":{"iqm":16.415,"low":8.524,"high":26.067,"jitter":1.687}},"packetLoss":0,"isp":"Zen Internet Ltd","interface":{"internalIp":"192.168.199.1","name":"eth0","macAddr":"EE:55:11:AA:BB:CC","isVpn":false,"externalIp":"80.70.20.200"},"server":{"id":40788,"host":"speedtest02a.web.zen.net.uk","port":8080,"name":"Zen Internet","location":"London","country":"United Kingdom","ip":"51.148.82.21"},"result":{"id":"85adc2c1-xxxx-yyyy-bf4a-a54878dd50ec","url":"https://www.speedtest.net/result/c/85adc2c1-xxxx-yyyy-bf4a-a54878dd50ec","persisted":true}}
     rtt_speedtest=$(echo "$speedtest_result" | jq -r '.ping.latency')
     download=$(echo "$speedtest_result" | jq -r '.download.bandwidth')
-    # Convert to Mbps
-    download=$((download * 8 / 1000000))
     upload=$(echo "$speedtest_result" | jq -r '.upload.bandwidth')
-    # Convert to Mbps
-    upload=$((upload * 8 / 1000000))
+    # Convert bytes/s to Mbps. Only numbers: bash arithmetic turns a failed
+    # test's empty or null into 0.
+    for field in download upload; do
+        if [[ ${!field} =~ ^[0-9]+$ ]]; then
+            printf -v "$field" %s $((${!field} * 8 / 1000000))
+        fi
+    done
 fi
 
 # Grafana Live rejects the whole sample if any field is empty or null.
