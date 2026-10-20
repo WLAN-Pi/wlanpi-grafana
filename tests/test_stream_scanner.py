@@ -54,7 +54,8 @@ def run_scanner(tmp_path, responses, tokens=("tok1",), cycles=None):
     sleeps = tmp_path / "sleep_args"
     stubs = {
         opt / "check-token.sh": "",
-        opt / "to-grafana.sh": f'echo "$1" > "{tmp_path}/channel"; cat >> "{pushed}"',
+        opt
+        / "to-grafana.sh": f'echo "$1" > "{tmp_path}/channel"; [ "$2" = -z ] && cat >> "{pushed}"',
     }
     for path, body in stubs.items():
         path.write_text(f"#!/bin/bash\n{body}\n")
@@ -94,10 +95,13 @@ def run_scanner(tmp_path, responses, tokens=("tok1",), cycles=None):
     def lines(path):
         return path.read_text().splitlines() if path.exists() else []
 
+    # to-grafana.sh -z pushes each NUL-terminated record.
+    pushes = pushed.read_text().split("\0")[:-1] if pushed.exists() else []
     return SimpleNamespace(
         out=result.stdout.splitlines(),
         channel=channel.read_text().strip() if channel.exists() else None,
-        pushed=lines(pushed),
+        pushes=pushes,
+        pushed=[line for push in pushes for line in push.splitlines()],
         calls=lines(calls),
         headers=lines(headers),
         sleeps=lines(sleeps),
@@ -129,6 +133,8 @@ def test_pushes_each_network_in_the_scanner_format(tmp_path):
     tags = "bssid=001122334455,freq=2412,channel=1"
     assert run.out == []
     assert run.channel == "scanner"
+    # One push per scan: one request per network loads Grafana.
+    assert len(run.pushes) == 1
     assert run.pushed == [
         line(
             r"bssid=9a2a6f42e479,freq=2462,channel=11,name=Office\ [9a2a6f42e479],ssid=Office",
@@ -145,6 +151,12 @@ def test_pushes_each_network_in_the_scanner_format(tmp_path):
         line(rf"{tags},name=PoM-\x1a\x13\ [001122334455],ssid=PoM-\x1a\x13"),
         line(rf"{tags},name=Café\ [001122334455],ssid=Café"),
     ]
+
+
+def test_pushes_nothing_for_a_scan_with_no_networks(tmp_path):
+    run = run_scanner(tmp_path, [scan()])
+
+    assert run.pushes == []
 
 
 def test_logs_each_failure_once(tmp_path):
