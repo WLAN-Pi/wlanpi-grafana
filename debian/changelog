@@ -1,3 +1,27 @@
+wlanpi-grafana (1.1.5) unstable; urgency=medium
+
+  * Scan through wlanpi-core instead of nlscan-lp. Each scanner stream
+    calls the wlanpi-core scan API, so SSIDs with commas, equals signs,
+    tabs or trailing backslashes are no longer dropped.
+  * Push each scan to Grafana in one request instead of one per network.
+    With three adapters scanning, Grafana's CPU use drops from over one
+    core to a few percent.
+  * Keep the Grafana API token in /etc/wlanpi-grafana/token, readable by
+    root only, instead of /etc/environment, which every login session
+    loads. Upgrading moves the existing token.
+  * Replace a saved token that Grafana rejects, for example after a
+    Grafana database reset. Running streams pick up the new token
+    without a restart.
+  * Upgrading with data streams running restarts them once. They used to
+    restart 11 times and end up failed.
+  * Report a missing or failed measurement as -1 on the WLAN Pi Health
+    and Internet Monitoring dashboards instead of dropping the whole
+    sample. Internet Monitoring now works with an IPv6 first nameserver
+    or an IPv6-only network, and reports a failed Ookla test as -1
+    instead of 0 Mbps.
+
+ -- Josh Schmelzle <josh@joshschmelzle.com>  Tue, 20 Oct 2026 03:24:50 -0400
+
 wlanpi-grafana (1.1.4) unstable; urgency=medium
 
   * Point the dashboard banners at Apps > Grafana > Data streams in the
