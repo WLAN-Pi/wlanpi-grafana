@@ -3,4 +3,15 @@ install/etc/grafana/provisioning/dashboards/wlanpi-dashboards.yaml etc/grafana/p
 install/opt/wlanpi-grafana/* opt/wlanpi-grafana/
 install/var/lib/grafana/dashboards/* var/lib/grafana/dashboards/
 install/etc/sudoers.d/spectools etc/sudoers.d/
+debian/wlanpi-grafana-health.service usr/lib/systemd/system/
+debian/wlanpi-grafana-internet.service usr/lib/systemd/system/
+debian/wlanpi-grafana-scanner-wlan0.service usr/lib/systemd/system/
+debian/wlanpi-grafana-scanner-wlan1.service usr/lib/systemd/system/
+debian/wlanpi-grafana-scanner-wlan2.service usr/lib/systemd/system/
+debian/wlanpi-grafana-wipry-lp-24.service usr/lib/systemd/system/
+debian/wlanpi-grafana-wipry-lp-5.service usr/lib/systemd/system/
+debian/wlanpi-grafana-wipry-lp-6.service usr/lib/systemd/system/
+debian/wlanpi-grafana-wipry-lp-stop.service usr/lib/systemd/system/
+debian/wlanpi-grafana-wispy-24.service usr/lib/systemd/system/
+debian/wlanpi-grafana-wispy-5.service usr/lib/systemd/system/
 install/usr/share/grafana/public/img/bg/* usr/share/grafana/public/img/bg/

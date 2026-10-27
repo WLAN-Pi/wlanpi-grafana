@@ -3,7 +3,7 @@ Section: embedded
 Priority: optional
 Maintainer: Jiri Brejcha <jirka@jiribrejcha.net>
 Uploaders: Jiri Brejcha <jirka@jiribrejcha.net>
-Build-Depends: debhelper (>= 11),
+Build-Depends: debhelper-compat (= 13),
                dh-python,
                pybuild-plugin-pyproject,
                dh-virtualenv (>= 1.1),
